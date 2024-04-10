@@ -16,6 +16,9 @@ namespace UI.Button.Controllers
         private UnityEngine.UI.Button _button;
         private TextMeshProUGUI _textMeshPro;
 
+        [Space, Header("Modification")] [SerializeField]
+        private ModificationType modificationType = ModificationType.None;
+
         [Space, Header("ButtonSprites")] [SerializeField]
         private Sprite IdleSprite;
 
@@ -31,31 +34,28 @@ namespace UI.Button.Controllers
         private void Init()
         {
             _button = GetComponent<UnityEngine.UI.Button>();
+            
+            // Essential listeners for button
             _button.onClick.AddListener(OnClickEvent.Invoke);
+            _button.onClick.AddListener(setModificationType); // change current modification when clicked
+
 
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
             _textMeshPro.SetText(Label);
 
-            var modificationManager = ModificationManager.Instance;
+        }
 
-            //todo: Change this test code later
-            // switch (Label)
-            // {
-            //     case "Rotation":
-            //         modificationManager.SetModificationType(ModificationType.Rotation);
-            //         break;
-            //
-            //     case "Scale":
-            //         modificationManager.SetModificationType(ModificationType.Scale);
-            //         break;
-            //
-            //     case "Transparency":
-            //         modificationManager.SetModificationType(ModificationType.Transparency);
-            //         break;
-            //
-            //     default:
-            //         throw new Exception("Button Label not found!");
-            // }
+        private void setModificationType()
+        {
+            ModificationManager.Instance.SetModificationType(modificationType);
+            restoreModificationValueOnSlider();
+            Logger.Instance.InfoLog($"Current modification type is: {modificationType}.");
+            
+        }
+        
+        private void restoreModificationValueOnSlider()
+        {
+            ModificationManager.Instance.UpdateSliderValue();
         }
 
         public void AddOnClick(Action onClick)

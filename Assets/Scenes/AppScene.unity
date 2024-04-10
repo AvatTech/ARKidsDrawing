@@ -306,6 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
         type: 3}
+      propertyPath: modificationType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
+        type: 3}
       propertyPath: <Label>k__BackingField
       value: Transparency
       objectReference: {fileID: 0}
@@ -888,6 +893,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Button_Scale
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
+        type: 3}
+      propertyPath: modificationType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
         type: 3}
@@ -1505,6 +1515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Button_Rotation
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
+        type: 3}
+      propertyPath: modificationType
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7566417419040608085, guid: aff8efdf8ab25654eb4ee679d37fe794,
         type: 3}

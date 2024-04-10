@@ -21,6 +21,11 @@ namespace UI.Slider.Controller
         }
 
 
+        public void SetSliderValue(float value)
+        {
+            slider.value = Mathf.Clamp(value, 0f, 1f);
+        }
+
         public void OnSliderValueChanged(float value)
         {
             onValueChanged.Invoke(value);

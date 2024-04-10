@@ -1,8 +1,4 @@
-﻿using System;
-using Sketch.Builder;
-using Sketch.Modification.Abstraction;
-using Sketch.Modification.Enum;
-using Sketch.Modification.ModificationService;
+﻿using Sketch.Modification.Enum;
 using UI.Slider.Controller;
 using UnityEngine;
 
@@ -17,8 +13,13 @@ namespace Sketch.Modification.Manager
         public static ModificationManager Instance { get; private set; }
 
         private ModificationType _currentModificationType = ModificationType.Transparency;
-        private ModifierService _modifierService = new ModifierService();
         private Model.Sketch _currentSketch;
+
+
+        // stored values!
+        private float scaleSliderValue;
+        private float rotationSliderValue;
+        private float transparencySliderValue;
 
 
         private void Awake()
@@ -33,36 +34,51 @@ namespace Sketch.Modification.Manager
         {
             mainSlider.onValueChanged += f =>
             {
-                Logger.Instance.InfoLog("On Value change in ModificationManager called!");
-                Logger.Instance.InfoLog($"currentModificationtype is {_currentModificationType}");
-                Logger.Instance.InfoLog($"Current sketch is {_currentSketch.Name}");
-
                 switch (_currentModificationType)
                 {
                     case ModificationType.Transparency:
                     {
                         _currentSketch.SetTransparency(f);
-                        Logger.Instance.InfoLog(
-                            $"transparency set is called!");
-
+                        transparencySliderValue = f;
                         break;
                     }
 
                     case ModificationType.Scale:
                     {
                         _currentSketch.SetScale(f);
+                        scaleSliderValue = f;
                         break;
                     }
 
                     case ModificationType.Rotation:
                     {
                         _currentSketch.SetRotation(f);
+                        rotationSliderValue = f;
                         break;
                     }
                 }
             };
         }
 
+
+        public void UpdateSliderValue()
+        {
+            switch (_currentModificationType)
+            {
+                case ModificationType.Rotation:
+                    mainSlider.SetSliderValue(rotationSliderValue);
+                    break;
+
+
+                case ModificationType.Scale:
+                    mainSlider.SetSliderValue(scaleSliderValue);
+                    break;
+
+                case ModificationType.Transparency:
+                    mainSlider.SetSliderValue(transparencySliderValue);
+                    break;
+            }
+        }
 
         public void SetModificationType(ModificationType modificationType)
         {
@@ -85,12 +101,6 @@ namespace Sketch.Modification.Manager
         public void OnSketchPlaced(GameObject placedSketchObj)
         {
             _currentSketch = placedSketchObj.GetComponentInChildren<Model.Sketch>();
-            Logger.Instance.InfoLog("Object has been placed down!");
-            if (_currentSketch is null)
-            {
-                Logger.Instance.InfoLog($"sketch is null!!!");
-            }
-            Logger.Instance.InfoLog($"Current sketch is {_currentSketch.Name}");
         }
     }
 }
