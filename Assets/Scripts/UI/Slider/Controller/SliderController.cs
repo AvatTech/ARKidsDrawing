@@ -5,7 +5,7 @@ namespace UI.Slider.Controller
 {
     public class SliderController : MonoBehaviour
     {
-        [SerializeField] private UnityEngine.UI.Slider slider;
+        private UnityEngine.UI.Slider slider;
 
         public Action<float> onValueChanged;
 
@@ -16,6 +16,7 @@ namespace UI.Slider.Controller
 
         private void Init()
         {
+            slider = GetComponent<UnityEngine.UI.Slider>();
             slider.onValueChanged.AddListener(OnSliderValueChanged);
         }
 
