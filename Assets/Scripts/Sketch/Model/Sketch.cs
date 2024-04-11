@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Unity.Mathematics;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sketch.Model
@@ -12,8 +14,14 @@ namespace Sketch.Model
 
         private void Start()
         {
+            Init();
+        }
+
+        private void Init()
+        {
             _image = GetComponentInChildren<Image>();
             _sprite = _image.sprite;
+            SetScale(0.5f);
         }
 
         public void SetSprite(Sprite sprite)
@@ -25,17 +33,19 @@ namespace Sketch.Model
         public void SetTransparency(float value)
         {
             _image.color = new Color(1, 1, 1, value);
-            
         }
 
         public void SetRotation(float value)
         {
-            //transform.Rotate();
+            transform.rotation = quaternion.RotateY(value * 10);
+            //transform.Rotate(0f, value * 2f, 0f);
         }
 
         public void SetScale(float value)
         {
-            //transform.Rotate();
+            var targetValue = Mathf.Lerp(0.5f, 1.5f, value);
+
+            transform.localScale = new Vector3(targetValue, targetValue, targetValue);
         }
     }
 }
