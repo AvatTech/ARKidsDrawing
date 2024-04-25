@@ -78,3 +78,7 @@ Packages/com.ptc.vuforia.engine-10.22.5.tgz
 
 
 # Salam
+/Assets/Plugins
+/Assets/Firebase
+/Assets/ExternalDependencyManager
+/Assets/Editor Default Resources
