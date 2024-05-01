@@ -1,6 +1,6 @@
 using System;
-using Sketch.Modification.Enum;
-using Sketch.Modification.Manager;
+using Sketches.Modification.Enum;
+using Sketches.Modification.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,7 +34,7 @@ namespace UI.Button.Controllers
         private void Init()
         {
             _button = GetComponent<UnityEngine.UI.Button>();
-            
+
             // Essential listeners for button
             _button.onClick.AddListener(OnClickEvent.Invoke);
             _button.onClick.AddListener(setModificationType); // change current modification when clicked
@@ -43,6 +43,7 @@ namespace UI.Button.Controllers
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
             _textMeshPro.SetText(Label);
 
+            //_button.
         }
 
         private void setModificationType()
@@ -50,9 +51,8 @@ namespace UI.Button.Controllers
             ModificationManager.Instance.SetModificationType(modificationType);
             restoreModificationValueOnSlider();
             Logger.Instance.InfoLog($"Current modification type is: {modificationType}.");
-            
         }
-        
+
         private void restoreModificationValueOnSlider()
         {
             ModificationManager.Instance.UpdateSliderValue();
@@ -67,12 +67,13 @@ namespace UI.Button.Controllers
         public void Enable()
         {
             _button.Select();
+            _textMeshPro.CrossFadeAlpha(1, 0.2f, true);
             Debug.Log($"Button <{Label}> has been enabled.");
         }
 
         public void Disable()
         {
-            //_button.Select();
+            _textMeshPro.CrossFadeAlpha(0.6f, 0.1f, true);
             Debug.Log($"Button <{Label}> has been disabled.");
         }
     }

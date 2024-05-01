@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Firebase.Extensions;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Firebase.Firestore
 {
@@ -11,25 +13,26 @@ namespace Firebase.Firestore
         private readonly FirebaseFirestore _firestore = FirebaseFirestore.DefaultInstance;
 
 
-        public void GetCategories<T>(Action<T> action)
+        public async Task<QuerySnapshot> GetCategories()
         {
             var collection = _firestore.Collection(CollectionPath);
-            collection.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    Logger.Instance.InfoLog("task is faulted");
-                }
+            return await collection.GetSnapshotAsync();
 
-                if (task.IsCompleted)
-                {
-                    Logger.Instance.InfoLog(task.Result.Count + "");
-
-                    var data = task.Result;
-                    action.Invoke(data.ConvertTo<T>());
-                }
-
-            });
+            // ContinueWithOnMainThread(task =>
+            // {
+            //     if (task.IsFaulted)
+            //     {
+            //         Debug.Log("Task is Faulted!");
+            //     }
+            //
+            //     if (task.IsCompleted)
+            //     {
+            //         Debug.Log("Task is completed!");
+            //         var data = task.Result;
+            //
+            //         action.Invoke(data.ConvertTo<T>());
+            //     }
+            // });
         }
     }
 }

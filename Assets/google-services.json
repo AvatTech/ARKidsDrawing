@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "396292199698",
+    "project_id": "sketchbicchildar",
+    "storage_bucket": "sketchbicchildar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396292199698:android:80449bab1ad196c5754fcb",
+        "android_client_info": {
+          "package_name": "com.avat.sketchbicchildar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChRI0OZPhpSDunV7FQXJDRL5X_1z-ilg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Firebase.Firestore;
+using Zenject;
 
 namespace Repositories
 {
-    public class CategoryRepository<T>
+    public class CategoryRepository
     {
-        public void GetCategories(Action<T> action)
+        [Inject] private FirestoreCategoryManager _manager;
+
+        public async Task<QuerySnapshot> GetCategories()
         {
-            var manager = new FirestoreCategoryManager();
-            manager.GetCategories(action);
+            return await _manager.GetCategories();
         }
     }
 }
