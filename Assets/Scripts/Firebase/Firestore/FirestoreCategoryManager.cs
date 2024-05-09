@@ -17,22 +17,6 @@ namespace Firebase.Firestore
         {
             var collection = _firestore.Collection(CollectionPath);
             return await collection.GetSnapshotAsync();
-
-            // ContinueWithOnMainThread(task =>
-            // {
-            //     if (task.IsFaulted)
-            //     {
-            //         Debug.Log("Task is Faulted!");
-            //     }
-            //
-            //     if (task.IsCompleted)
-            //     {
-            //         Debug.Log("Task is completed!");
-            //         var data = task.Result;
-            //
-            //         action.Invoke(data.ConvertTo<T>());
-            //     }
-            // });
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Categories;
+using Categories.Model;
 using Firebase.Firestore;
 using Repositories;
 using UnityEngine;
 using Zenject;
 
-namespace UI.Services
+namespace Categories.Services
 {
     public class FetchCategoriesService
     {
@@ -29,9 +29,7 @@ namespace UI.Services
                     id: doc.Id,
                     coverImageUrl: categoryCoverImage.ToString()
                 );
-
-                Debug.Log(newCat.Name);
-
+                
                 _categories.Add(newCat);
             }
         }
@@ -39,13 +37,11 @@ namespace UI.Services
 
         public async Task<List<Category>> FetchCategoryList()
         {
-            Debug.Log("Getting categories!");
             QuerySnapshot snapshot = await _categoryRepository.GetCategories();
             OnQueryReceived(snapshot);
 
             await Task.Yield();
 
-            Debug.Log("Done!");
 
             return _categories;
         }

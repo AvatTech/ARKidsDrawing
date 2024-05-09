@@ -1,4 +1,5 @@
-﻿using Sketches.Modification.Enum;
+﻿using Sketches.Controller;
+using Sketches.Modification.Enum;
 using UI.Slider.Controller;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Sketches.Modification.Manager
         public static ModificationManager Instance { get; private set; }
 
         private ModificationType _currentModificationType = ModificationType.Transparency;
-        private Model.Sketch _currentSketch;
+        private SketchController _currentSketchController;
 
 
         // stored values!
@@ -38,21 +39,21 @@ namespace Sketches.Modification.Manager
                 {
                     case ModificationType.Transparency:
                     {
-                        _currentSketch.SetTransparency(f);
+                        _currentSketchController.SetTransparency(f);
                         transparencySliderValue = f;
                         break;
                     }
 
                     case ModificationType.Scale:
                     {
-                        _currentSketch.SetScale(f);
+                        _currentSketchController.SetScale(f);
                         scaleSliderValue = f;
                         break;
                     }
 
                     case ModificationType.Rotation:
                     {
-                        _currentSketch.SetRotation(f);
+                        _currentSketchController.SetRotation(f);
                         rotationSliderValue = f;
                         break;
                     }
@@ -85,22 +86,9 @@ namespace Sketches.Modification.Manager
             _currentModificationType = modificationType;
         }
 
-        // public void CreateNewSketchTest()
-        // {
-        //     _currentSketch = SketchBuilder
-        //         .Builder()
-        //         .SetName("A_alphabet")
-        //         .SetSprite(testSprite)
-        //         .SetTransparency(50)
-        //         .SetScale(1)
-        //         .SetRotation(0)
-        //         .Build();
-        // }
-
-
         public void OnSketchPlaced(GameObject placedSketchObj)
         {
-            _currentSketch = placedSketchObj.GetComponentInChildren<Model.Sketch>();
+            _currentSketchController = placedSketchObj.GetComponentInChildren<SketchController>();
         }
     }
 }

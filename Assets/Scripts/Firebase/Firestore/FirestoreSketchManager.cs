@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Firebase.Extensions;
 using Unity.VisualScripting;
 
@@ -6,31 +7,16 @@ namespace Firebase.Firestore
 {
     public class FirestoreSketchManager
     {
-        private const string CategoryCollectionPath = "categories";
+        private const string CollectionPath = "categories";
+        private const string SketchesPath = "sketches";
 
         private readonly FirebaseFirestore _firestore = FirebaseFirestore.DefaultInstance;
 
-        public void LoadSketchWithCategoryId<T>(string categoryId, Action<T> action)
+
+        public async Task<QuerySnapshot> GetSketchesById(string categoryId)
         {
-            var path = $"{CategoryCollectionPath}";
-            var collection = _firestore.Collection(path).Document(categoryId).Collection(categoryId);
-            collection.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    Logger.Instance.InfoLog("task is faulted");
-                }
-
-                if (task.IsCompleted)
-                {
-                    var result = task.Result;
-
-                    Logger.Instance.InfoLog($"documents count: {task.Result.Count}");
-
-                    action.Invoke(result.ConvertTo<T>());
-
-                }
-            });
+            var collection = _firestore.Collection(CollectionPath).Document(categoryId).Collection(SketchesPath);
+            return await collection.GetSnapshotAsync();
         }
     }
 }

@@ -1,21 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
+using Categories.Services;
 using Firebase.Firestore;
 using Repositories;
+using Sketches.Builder;
 using Sketches.Services;
-using UI.Services;
-using UnityEngine;
 using Zenject;
 
-public class MainInstaller : MonoInstaller
+namespace Installer
 {
-    public override void InstallBindings()
+    public class MainInstaller : MonoInstaller
     {
-        Container.Bind<CategoryRepository>().AsSingle();
+        public override void InstallBindings()
+        {
+
+            InstallRepositories();
+            InstallServices();
+            InstallFirestore();
+        }
 
 
-        Container.Bind<FetchCategoriesService>().AsTransient();
-        Container.Bind<FirestoreCategoryManager>().AsTransient();
-        //Container.Bind<ImageLoaderService>().AsTransient().NonLazy();
+        private void InstallRepositories()
+        {
+            Container.Bind<CategoryRepository>().AsSingle();
+            Container.Bind<SketchRepository>().AsSingle();
+        }
+
+        private void InstallServices()
+        {
+            Container.Bind<FetchCategoriesService>().AsTransient();
+            Container.Bind<FetchSketchesService>().AsTransient();
+        }
+
+        private void InstallFirestore()
+        {
+            Container.Bind<FirestoreCategoryManager>().AsTransient();
+            Container.Bind<FirestoreSketchManager>().AsTransient();
+        }
     }
 }
