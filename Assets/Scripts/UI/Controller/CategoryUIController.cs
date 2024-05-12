@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Model;
 using Categories.Services;
@@ -15,20 +16,45 @@ namespace UI.Controller
         [SerializeField, Tooltip("Category Item which has Category Controller.")]
         private GameObject categoryItemPrefab;
 
-
-        private bool isFetchingDone = false;
         private List<Category> _categories;
-
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
 
-
-        private async void OnEnable()
+        private void OnEnable()
         {
-            // Fetch Categories!
-            await FetchCategories();
+            SyncCategories();
         }
 
+
+        public void SyncCategories()
+        {
+            SplashScreenController.Instance.SetState(SplashScreenState.Loading);
+
+            // Fetch Categories!
+
+            Task fetchTask = FetchCategories();
+            Task timerTask = Task.Delay(5000);
+
+            fetchTask.Start();
+            timerTask.Start();
+
+            while (!timerTask.IsCompleted)
+            {
+                if (fetchTask.IsCompleted || fetchTask.IsCompletedSuccessfully)
+                {
+                    SplashScreenController.Instance.SetState(SplashScreenState.Done);
+                    break;
+                }
+
+                if (fetchTask.IsCanceled || fetchTask.IsFaulted)
+                {
+                    SplashScreenController.Instance.SetState(SplashScreenState.Failed);
+                    break;
+                }
+            }
+
+            SplashScreenController.Instance.SetState(SplashScreenState.Failed);
+        }
 
         async Task FetchCategories()
         {
@@ -36,7 +62,6 @@ namespace UI.Controller
 
             await Task.Yield();
 
-            isFetchingDone = true;
 
             await SetUpCategoryItems(_categories);
         }
@@ -52,6 +77,8 @@ namespace UI.Controller
                 controller.SetText(cat.Name);
                 await controller.SetImageFromUrl(cat.CoverImageUrl);
             }
+
+            await Task.Yield();
         }
     }
 }

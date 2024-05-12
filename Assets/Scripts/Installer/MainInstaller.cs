@@ -1,5 +1,6 @@
 using Categories.Services;
 using Firebase.Firestore;
+using Network;
 using Repositories;
 using Sketches.Builder;
 using Sketches.Services;
@@ -11,6 +12,7 @@ namespace Installer
     {
         public override void InstallBindings()
         {
+            Container.Bind<ConnectionChecker>().AsSingle().NonLazy();
 
             InstallRepositories();
             InstallServices();
