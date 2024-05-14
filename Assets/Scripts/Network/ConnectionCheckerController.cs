@@ -11,8 +11,8 @@ namespace Network
 
         private void Start()
         {
-            if(!_connectionChecker.IsConnectedToNetwork())
-                Debug.Log("Your internal pointer variable is mother fucker");
+            if (!_connectionChecker.IsConnectedToNetwork())
+                SplashScreenController.Instance.SetState(SplashScreenState.Failed);
         }
     }
 }

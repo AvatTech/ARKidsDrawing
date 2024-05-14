@@ -29,7 +29,7 @@ namespace Categories.Services
                     id: doc.Id,
                     coverImageUrl: categoryCoverImage.ToString()
                 );
-                
+
                 _categories.Add(newCat);
             }
         }

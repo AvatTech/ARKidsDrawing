@@ -17,6 +17,7 @@ namespace Firebase.Firestore
         {
             var collection = _firestore.Collection(CollectionPath);
             return await collection.GetSnapshotAsync();
+
         }
     }
 }

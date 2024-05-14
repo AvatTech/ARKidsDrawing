@@ -20,40 +20,21 @@ namespace UI.Controller
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
 
-        private void OnEnable()
+        private async void OnEnable()
         {
-            SyncCategories();
+            await SyncCategories();
         }
 
 
-        public void SyncCategories()
+        public async Task SyncCategories()
         {
             SplashScreenController.Instance.SetState(SplashScreenState.Loading);
 
             // Fetch Categories!
+            await FetchCategories();
+            
+            SplashScreenController.Instance.SetState(SplashScreenState.Done);
 
-            Task fetchTask = FetchCategories();
-            Task timerTask = Task.Delay(5000);
-
-            fetchTask.Start();
-            timerTask.Start();
-
-            while (!timerTask.IsCompleted)
-            {
-                if (fetchTask.IsCompleted || fetchTask.IsCompletedSuccessfully)
-                {
-                    SplashScreenController.Instance.SetState(SplashScreenState.Done);
-                    break;
-                }
-
-                if (fetchTask.IsCanceled || fetchTask.IsFaulted)
-                {
-                    SplashScreenController.Instance.SetState(SplashScreenState.Failed);
-                    break;
-                }
-            }
-
-            SplashScreenController.Instance.SetState(SplashScreenState.Failed);
         }
 
         async Task FetchCategories()

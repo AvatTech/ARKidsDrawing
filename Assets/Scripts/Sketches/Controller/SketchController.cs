@@ -4,6 +4,7 @@ using Sketches.Model;
 using Sketches.Services;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Sketches.Controller
@@ -13,7 +14,8 @@ namespace Sketches.Controller
         public Sketch Sketch { get; private set; }
 
 
-        private RawImage _rawImage;
+        public RawImage RawImage;
+        private Button _button;
 
 
         private ImageLoaderService _imageLoaderService = new();
@@ -26,14 +28,25 @@ namespace Sketches.Controller
 
         private void Init()
         {
-            _rawImage = GetComponentInChildren<RawImage>();
+            RawImage = GetComponentInChildren<RawImage>();
+            _button = GetComponentInChildren<Button>();
+
+            _button.onClick.AddListener(OnSketchClicked);
+
             SetScale(0.5f);
         }
 
 
+        private void OnSketchClicked()
+        {
+            CurrentSketchHolder.Instance.CurrentSketchController = this;
+            // Load next scene
+            SceneManager.LoadScene("AppScene");
+        }
+
         public void SetTransparency(float value)
         {
-            _rawImage.color = new Color(1, 1, 1, value);
+            RawImage.color = new Color(1, 1, 1, value);
         }
 
         public void SetRotation(float value)
@@ -58,7 +71,7 @@ namespace Sketches.Controller
 
             await Task.Yield();
 
-            _rawImage.texture = texture;
+            RawImage.texture = texture;
         }
 
 
