@@ -13,18 +13,15 @@ namespace UI.Button.Controllers
         [field: SerializeField] public string Label { set; get; }
         public UnityEvent OnClickEvent;
 
-        private UnityEngine.UI.Button _button;
-        private TextMeshProUGUI _textMeshPro;
 
         [Space, Header("Modification")] [SerializeField]
         private ModificationType modificationType = ModificationType.None;
 
-        [Space, Header("ButtonSprites")] [SerializeField]
-        private Sprite IdleSprite;
+        [SerializeField] private GameObject enablePanel;
 
-        [SerializeField] private Sprite EnableSprite;
-        [SerializeField] private Sprite DisableSprite;
 
+        private UnityEngine.UI.Button _button;
+        private TextMeshProUGUI _textMeshPro;
 
         private void Start()
         {
@@ -43,6 +40,8 @@ namespace UI.Button.Controllers
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
             _textMeshPro.SetText(Label);
 
+            enablePanel.SetActive(false);
+
             //_button.
         }
 
@@ -50,7 +49,6 @@ namespace UI.Button.Controllers
         {
             ModificationManager.Instance.SetModificationType(modificationType);
             restoreModificationValueOnSlider();
-            Logger.Instance.InfoLog($"Current modification type is: {modificationType}.");
         }
 
         private void restoreModificationValueOnSlider()
@@ -67,13 +65,15 @@ namespace UI.Button.Controllers
         public void Enable()
         {
             _button.Select();
-            _textMeshPro.CrossFadeAlpha(1, 0.2f, true);
+            enablePanel.SetActive(true);
+            //_textMeshPro.CrossFadeAlpha(1, 0.2f, true);
             Debug.Log($"Button <{Label}> has been enabled.");
         }
 
         public void Disable()
         {
-            _textMeshPro.CrossFadeAlpha(0.6f, 0.1f, true);
+            enablePanel.SetActive(false);
+            //_textMeshPro.CrossFadeAlpha(0.6f, 0.1f, true);
             Debug.Log($"Button <{Label}> has been disabled.");
         }
     }
