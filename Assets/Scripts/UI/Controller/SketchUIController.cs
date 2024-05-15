@@ -41,13 +41,11 @@ namespace UI.Controller
 
         private void OnDisable()
         {
-            Debug.Log("Disableeeeeeed");
             RemoveSketches();
         }
 
         private async Task FetchSketches()
         {
-            Debug.Log("fetch ketch");
             _sketches = await _fetchSketchesService.FetchSketchesById(_currentCategoryManager.CurrentCategory.Id);
 
             await Task.Yield();

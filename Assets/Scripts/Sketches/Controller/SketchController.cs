@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using imageLoader = Extensions.Unity.ImageLoader.ImageLoader;
 
 namespace Sketches.Controller
 {
@@ -78,10 +79,12 @@ namespace Sketches.Controller
 
         private async Task<Texture2D> FetchImageFromUrl(string url)
         {
-            if (_imageLoaderService is null)
-                throw new NullReferenceException("Image Loader Service is null!");
+            Texture2D t = null;
 
-            return await _imageLoaderService!.TryGetTexture(url);
+            await imageLoader.LoadSprite(url).Then((sprite => { t = sprite.texture; }));
+
+            return t;
+
         }
     }
 }

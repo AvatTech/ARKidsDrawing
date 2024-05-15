@@ -33,10 +33,17 @@ namespace UI.Controller
 
             // Fetch Categories!
             await FetchCategories();
-            
-            SplashScreenController.Instance.SetState(SplashScreenState.Done);
 
+            SplashScreenController.Instance.SetState(SplashScreenState.Done);
         }
+
+
+        private void OnDisable()
+        {
+            // Extensions.Unity.ImageLoader.ImageLoader.ClearCache();
+            // Extensions.Unity.ImageLoader.ImageLoader.ClearDiskCache();
+        }
+
 
         async Task FetchCategories()
         {
