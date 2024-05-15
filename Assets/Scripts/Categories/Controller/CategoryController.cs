@@ -1,68 +1,71 @@
 using System.Threading.Tasks;
 using Categories.Model;
+using Categories.Utills;
 using Sketches.Services;
 using TMPro;
 using UI.Controller;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
-public class CategoryController : MonoBehaviour
+namespace Categories.Controller
 {
-    public Category Category { get; set; }
-
-
-    private RawImage _image;
-    private TextMeshProUGUI _textMeshPro;
-    private Button _button;
-
-    private ImageLoaderService _imageLoaderService = new();
-    private CurrentCategoryManager currentCategoryManager;
-    private MainUIController _mainUIController;
-
-
-    private void Awake()
+    public class CategoryController : MonoBehaviour
     {
-        _image = GetComponentInChildren<RawImage>();
-        _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
-        _button = GetComponent<Button>();
-        currentCategoryManager = CurrentCategoryManager.Instance;
-        _mainUIController = FindObjectOfType<MainUIController>();
-
-        _button.onClick.AddListener(OnClick);
-    }
+        public Category Category { get; set; }
 
 
-    public void OnClick()
-    {
-        currentCategoryManager.CurrentCategory = Category;
-        _mainUIController.ShowSketchesPanel();
-        Debug.Log($"Current Category is {Category.Name}");
-    }
+        private RawImage _image;
+        private TextMeshProUGUI _textMeshPro;
+        private Button _button;
 
-    public async Task SetImageFromUrl(string url)
-    {
-        if (string.IsNullOrEmpty(url)) return;
+        private ImageLoaderService _imageLoaderService = new();
+        private CurrentCategoryManager currentCategoryManager;
+        private MainUIController _mainUIController;
 
-        var texture = await FetchImageFromUrl(url);
 
-        await Task.Yield();
-
-        _image.texture = texture;
-    }
-
-    public void SetText(string text)
-    {
-        _textMeshPro.SetText(text);
-    }
-
-    private async Task<Texture2D> FetchImageFromUrl(string url)
-    {
-        if (_imageLoaderService is null)
+        private void Awake()
         {
-            Debug.Log("image loader is null");
+            _image = GetComponentInChildren<RawImage>();
+            _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
+            _button = GetComponent<Button>();
+            currentCategoryManager = CurrentCategoryManager.Instance;
+            _mainUIController = FindObjectOfType<MainUIController>();
+
+            _button.onClick.AddListener(OnClick);
         }
 
-        return await _imageLoaderService!.TryGetTexture(url);
+
+        public void OnClick()
+        {
+            currentCategoryManager.CurrentCategory = Category;
+            _mainUIController.ShowSketchesPanel();
+            Debug.Log($"Current Category is {Category.Name}");
+        }
+
+        public async Task SetImageFromUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return;
+
+            var texture = await FetchImageFromUrl(url);
+
+            await Task.Yield();
+
+            _image.texture = texture;
+        }
+
+        public void SetText(string text)
+        {
+            _textMeshPro.SetText(text);
+        }
+
+        private async Task<Texture2D> FetchImageFromUrl(string url)
+        {
+            if (_imageLoaderService is null)
+            {
+                Debug.Log("image loader is null");
+            }
+
+            return await _imageLoaderService!.TryGetTexture(url);
+        }
     }
 }
