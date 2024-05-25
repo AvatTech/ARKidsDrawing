@@ -14,7 +14,7 @@ namespace Sketches.Modification.Manager
         public static ModificationManager Instance { get; private set; }
 
         private ModificationType _currentModificationType = ModificationType.Transparency;
-        private SketchController _currentSketchController;
+        private ARSketchController _currentSketchController;
 
 
         // stored values!
@@ -88,7 +88,7 @@ namespace Sketches.Modification.Manager
 
         public void OnSketchPlaced(GameObject placedSketchObj)
         {
-            _currentSketchController = placedSketchObj.GetComponentInChildren<SketchController>();
+            _currentSketchController = placedSketchObj.GetComponentInChildren<ARSketchController>();
         }
     }
 }

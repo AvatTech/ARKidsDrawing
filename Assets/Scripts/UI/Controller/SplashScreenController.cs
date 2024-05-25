@@ -16,14 +16,10 @@ namespace UI.Controller
 
             SetState(SplashScreenState.Loading);
         }
-    
-    
         [SerializeField] private GameObject tryAgainButton;
         [SerializeField] private GameObject spinner;
         [SerializeField] private TextMeshProUGUI text;
-    
-    
-    
+        
         public void SetState(SplashScreenState splashScreenState)
         {
             switch (splashScreenState)

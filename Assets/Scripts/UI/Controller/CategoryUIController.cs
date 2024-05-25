@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
+using Extensions.Unity.ImageLoader;
+using Network;
 using UnityEngine;
 using Zenject;
 
@@ -21,37 +25,42 @@ namespace UI.Controller
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
 
+
         private async void OnEnable()
         {
             await SyncCategories();
         }
 
+        private void OnDisable()
+        {
+            ImageLoader.ClearCache();
+        }
+
+        public async void OnTryAgainClicked()
+        {
+            await SyncCategories();
+        }
 
         public async Task SyncCategories()
         {
-            SplashScreenController.Instance.SetState(SplashScreenState.Loading);
-
             // Fetch Categories!
             await FetchCategories();
-
-            SplashScreenController.Instance.SetState(SplashScreenState.Done);
         }
 
 
-        private void OnDisable()
+        private async Task FetchCategories()
         {
-            // Extensions.Unity.ImageLoader.ImageLoader.ClearCache();
-            // Extensions.Unity.ImageLoader.ImageLoader.ClearDiskCache();
-        }
+            SplashScreenController.Instance.SetState(SplashScreenState.Loading);
 
+            // Check connection
+            if(!await CheckConnection())
+                return;
+                
 
-        async Task FetchCategories()
-        {
+            // Get categories list
             _categories = await _fetchCategoriesService.FetchCategoryList();
 
-            await Task.Yield();
-
-
+            // setup category items in the scene
             await SetUpCategoryItems(_categories);
         }
 
@@ -64,10 +73,28 @@ namespace UI.Controller
                 CategoryController controller = categoryObject.GetComponent<CategoryController>();
                 controller.Category = cat;
                 controller.SetText(cat.Name);
-                await controller.SetImageFromUrl(cat.CoverImageUrl);
+                await controller.SetImageFromUrl(cat.CoverImageUrl, exception => throw exception);
             }
 
+            SplashScreenController.Instance.SetState(SplashScreenState.Done);
+
+            categories.Clear();
+
             await Task.Yield();
+        }
+
+
+        private async Task<bool> CheckConnection()
+        {
+            if (!await ConnectionChecker.IsConnectedToNetwork())
+            {
+                SplashScreenController.Instance.SetState(SplashScreenState.Failed);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

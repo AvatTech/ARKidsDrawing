@@ -66,13 +66,11 @@ namespace Sketches.Controller
 
         public async Task SetImageFromUrl(string url)
         {
+            
             if (string.IsNullOrEmpty(url)) return;
 
-            Debug.Log($"Loading sketch with url: {url}");
             var texture = await FetchImageFromUrl(url);
-
-            await Task.Yield();
-
+            
             RawImage.texture = texture;
         }
 

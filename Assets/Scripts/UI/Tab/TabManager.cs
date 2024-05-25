@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace UI.Tab
 {
+    
+    
     public class TabManager : MonoBehaviour
     {
         [SerializeField] private List<ButtonController> tabItems = new();

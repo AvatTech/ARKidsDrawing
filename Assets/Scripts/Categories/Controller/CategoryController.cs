@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Categories.Model;
 using Categories.Utills;
@@ -26,9 +27,13 @@ namespace Categories.Controller
         private void Awake()
         {
             _image = GetComponentInChildren<RawImage>();
+            
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
+            
             _button = GetComponent<Button>();
+            
             currentCategoryManager = CurrentCategoryManager.Instance;
+            
             _mainUIController = FindObjectOfType<MainUIController>();
 
             _button.onClick.AddListener(OnClick);
@@ -42,11 +47,11 @@ namespace Categories.Controller
             Debug.Log($"Current Category is {Category.Name}");
         }
 
-        public async Task SetImageFromUrl(string url)
+        public async Task SetImageFromUrl(string url, Action<Exception> onFailed)
         {
             if (string.IsNullOrEmpty(url)) return;
 
-            var texture = await FetchImageFromUrl(url);
+            var texture = await FetchImageFromUrl(url, onFailed);
 
             await Task.Yield();
 
@@ -58,14 +63,9 @@ namespace Categories.Controller
             _textMeshPro.SetText(text);
         }
 
-        private async Task<Texture2D> FetchImageFromUrl(string url)
+        private async Task<Texture2D> FetchImageFromUrl(string url, Action<Exception> onFailed)
         {
-            if (_imageLoaderService is null)
-            {
-                Debug.Log("image loader is null");
-            }
-
-            return await _imageLoaderService!.TryGetTexture(url);
+            return await _imageLoaderService!.TryGetTexture(url, onFailed);
         }
     }
 }

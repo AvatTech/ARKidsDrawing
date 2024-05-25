@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Model;
 using Firebase.Firestore;
 using Repositories;
+using Unity.Services.Core;
 using UnityEngine;
 using Zenject;
 
@@ -37,11 +39,15 @@ namespace Categories.Services
 
         public async Task<List<Category>> FetchCategoryList()
         {
-            QuerySnapshot snapshot = await _categoryRepository.GetCategories();
-            OnQueryReceived(snapshot);
+            await _categoryRepository.GetCategories().ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                    throw new RequestFailedException(0, "Firebase request has been failed!");
+                else
+                    OnQueryReceived(task.Result);
+            });
 
-            await Task.Yield();
-
+            
 
             return _categories;
         }

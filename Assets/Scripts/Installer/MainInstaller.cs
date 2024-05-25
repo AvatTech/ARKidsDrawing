@@ -12,8 +12,6 @@ namespace Installer
     {
         public override void InstallBindings()
         {
-            Container.Bind<ConnectionChecker>().AsSingle().NonLazy();
-
             InstallRepositories();
             InstallServices();
             InstallFirestore();

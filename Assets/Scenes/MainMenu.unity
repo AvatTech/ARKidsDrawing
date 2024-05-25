@@ -8806,7 +8806,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1349556065}
         m_TargetAssemblyTypeName: UI.Controller.CategoryUIController, Assembly-CSharp
-        m_MethodName: SyncCategories
+        m_MethodName: OnTryAgainClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

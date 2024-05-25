@@ -1,19 +1,36 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Network
 {
-    public class ConnectionChecker
+    public static class ConnectionChecker
     {
-        // Check whether device connected to the internet or not
-        public bool IsConnectedToNetwork()
+        private const string TEST_URL = "https://firebase.google.com/";
+        
+        
+        // check for connection
+        public static async Task<bool> IsConnectedToNetwork()
         {
-            // Check if the device is connected to any network
-            if (Application.internetReachability != NetworkReachability.NotReachable)
+            bool isConnected = true;
+            
+            UnityWebRequest request = new UnityWebRequest(TEST_URL);
+            
+            request.timeout = 5; // Timeout in seconds
+
+            try
             {
-                return true;
+                await request.SendWebRequest();
+            }
+            catch (Exception e)
+            {
+                isConnected = false;
             }
 
-            return false;
+
+            return isConnected;
         }
     }
 }
