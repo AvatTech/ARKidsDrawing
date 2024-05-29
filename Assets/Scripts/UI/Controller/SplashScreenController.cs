@@ -5,7 +5,7 @@ namespace UI.Controller
 {
     public class SplashScreenController : MonoBehaviour
     {
-        public static SplashScreenController Instance;
+        public static SplashScreenController Instance { get; private set; }
 
         private void Awake()
         {

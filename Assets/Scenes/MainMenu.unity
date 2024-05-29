@@ -5358,7 +5358,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1349556064}
   - component: {fileID: 1349556063}
-  - component: {fileID: 1349556065}
   m_Layer: 0
   m_Name: UI Controller
   m_TagString: Untagged
@@ -5395,21 +5394,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1349556065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1349556062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4912c596f3c04c45a23e3e9b1d14239a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  categoryParentObject: {fileID: 1111343983}
-  categoryItemPrefab: {fileID: 1588903562860300526, guid: ca2496425b3bf994f9d4f364abbafe74,
-    type: 3}
 --- !u!1 &1387967909
 GameObject:
   m_ObjectHideFlags: 0
@@ -5997,6 +5981,7 @@ GameObject:
   - component: {fileID: 1538180169}
   - component: {fileID: 1538180171}
   - component: {fileID: 1538180170}
+  - component: {fileID: 1538180172}
   m_Layer: 5
   m_Name: panel_main
   m_TagString: Untagged
@@ -6066,6 +6051,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1538180168}
   m_CullTransparentMesh: 1
+--- !u!114 &1538180172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538180168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4912c596f3c04c45a23e3e9b1d14239a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  categoryParentObject: {fileID: 1111343983}
+  categoryItemPrefab: {fileID: 1588903562860300526, guid: ca2496425b3bf994f9d4f364abbafe74,
+    type: 3}
+  _splashScreenController: {fileID: 1151126849}
 --- !u!1 &1549258345
 GameObject:
   m_ObjectHideFlags: 0
@@ -8805,7 +8806,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1349556065}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI.Controller.CategoryUIController, Assembly-CSharp
         m_MethodName: OnTryAgainClicked
         m_Mode: 1

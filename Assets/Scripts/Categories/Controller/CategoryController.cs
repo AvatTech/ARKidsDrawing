@@ -42,9 +42,10 @@ namespace Categories.Controller
 
         public void OnClick()
         {
+            
             currentCategoryManager.CurrentCategory = Category;
+            
             _mainUIController.ShowSketchesPanel();
-            Debug.Log($"Current Category is {Category.Name}");
         }
 
         public async Task SetImageFromUrl(string url, Action<Exception> onFailed)

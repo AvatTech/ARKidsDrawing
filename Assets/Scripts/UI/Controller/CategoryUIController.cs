@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
-using Extensions.Unity.ImageLoader;
 using Network;
 using UnityEngine;
 using Zenject;
@@ -21,7 +17,9 @@ namespace UI.Controller
         [SerializeField, Tooltip("Category Item which has Category Controller.")]
         private GameObject categoryItemPrefab;
 
-        private List<Category> _categories;
+        [SerializeField] private SplashScreenController _splashScreenController;
+
+        private List<Category> _categories = new();
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
 
@@ -31,10 +29,6 @@ namespace UI.Controller
             await SyncCategories();
         }
 
-        private void OnDisable()
-        {
-            //ImageLoader.ClearCache();
-        }
 
         public async void OnTryAgainClicked()
         {
@@ -50,18 +44,28 @@ namespace UI.Controller
 
         private async Task FetchCategories()
         {
-            SplashScreenController.Instance.SetState(SplashScreenState.Loading);
+            if (!ConnectionChecker.IsNetworkChecked)
+            {
+                Debug.Log("Network checkinng..");
+                _splashScreenController.SetState(SplashScreenState.Loading);
 
-            // Check connection
-            if(!await CheckConnection())
-                return;
-                
+                // Check connection
+                if (!await CheckConnection())
+                {
+                    Debug.Log("we dont have internet * *");
+                    return;
+                }
+                Debug.Log("we have internet * *");
+            }
+
 
             // Get categories list
             _categories = await _fetchCategoriesService.FetchCategoryList();
 
             // setup category items in the scene
             await SetUpCategoryItems(_categories);
+
+            _splashScreenController.SetState(SplashScreenState.Done);
         }
 
 
@@ -76,8 +80,7 @@ namespace UI.Controller
                 await controller.SetImageFromUrl(cat.CoverImageUrl, exception => throw exception);
             }
 
-            SplashScreenController.Instance.SetState(SplashScreenState.Done);
-
+            _splashScreenController.SetState(SplashScreenState.Done);
         }
 
 
@@ -85,13 +88,17 @@ namespace UI.Controller
         {
             if (!await ConnectionChecker.IsConnectedToNetwork())
             {
+                Debug.Log("kheyli bad...");
                 SplashScreenController.Instance.SetState(SplashScreenState.Failed);
                 return false;
             }
             else
             {
+                ConnectionChecker.IsNetworkChecked = true;
                 return true;
             }
+            
+            
         }
     }
 }

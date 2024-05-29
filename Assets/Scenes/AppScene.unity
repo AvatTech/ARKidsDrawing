@@ -3219,8 +3219,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 1836358887}
-  minScale: 0.5
-  maxScale: 1.5
+  minScale: 0.1
+  maxScale: 1.6
   minRotation: 0
   maxRotation: 360
 --- !u!212 &4785507606661011085

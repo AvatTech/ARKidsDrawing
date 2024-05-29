@@ -4,6 +4,7 @@ using Network;
 using Repositories;
 using Sketches.Builder;
 using Sketches.Services;
+using Storage;
 using Zenject;
 
 namespace Installer
@@ -12,11 +13,16 @@ namespace Installer
     {
         public override void InstallBindings()
         {
+            InstallStorages();
             InstallRepositories();
             InstallServices();
             InstallFirestore();
         }
 
+        private void InstallStorages()
+        {
+            Container.BindInterfacesTo<LocalStorage>().AsSingle();
+        }
 
         private void InstallRepositories()
         {

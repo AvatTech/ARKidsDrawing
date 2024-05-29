@@ -10,6 +10,8 @@ namespace Network
     {
         private const string TEST_URL = "https://firebase.google.com/";
         
+        public static bool IsNetworkChecked = false;
+
         
         // check for connection
         public static async Task<bool> IsConnectedToNetwork()
@@ -26,10 +28,10 @@ namespace Network
             }
             catch (Exception e)
             {
+                Debug.Log(e);
                 isConnected = false;
             }
-
-
+            
             return isConnected;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Sketches.Model;
-using Sketches.Services;
 using Sketches.Utills;
 using Unity.Mathematics;
 using UnityEngine;
@@ -15,11 +14,8 @@ namespace Sketches.Controller
         public Sketch Sketch { get; set; }
 
 
-        public RawImage RawImage;
+        private RawImage _rawImage;
         private Button _button;
-
-
-        private ImageLoaderService _imageLoaderService = new();
 
 
         private void Start()
@@ -29,7 +25,7 @@ namespace Sketches.Controller
 
         private void Init()
         {
-            RawImage = GetComponentInChildren<RawImage>();
+            _rawImage = GetComponentInChildren<RawImage>();
             _button = GetComponentInChildren<Button>();
 
             _button.onClick.AddListener(OnSketchClicked);
@@ -46,16 +42,6 @@ namespace Sketches.Controller
             SceneManager.LoadScene("AppScene");
         }
 
-        public void SetTransparency(float value)
-        {
-            RawImage.color = new Color(1, 1, 1, value);
-        }
-
-        public void SetRotation(float value)
-        {
-            transform.rotation = quaternion.RotateY(value * 10);
-        }
-
         public void SetScale(float value)
         {
             var targetValue = Mathf.Lerp(0.5f, 1.5f, value);
@@ -63,14 +49,17 @@ namespace Sketches.Controller
             transform.localScale = new Vector3(targetValue, targetValue, targetValue);
         }
 
-
         public async Task SetImageFromUrl(string url)
         {
             if (string.IsNullOrEmpty(url)) return;
 
             var texture = await FetchImageFromUrl(url);
 
-            RawImage.texture = texture;
+            Debug.Log($"for {name}: texture: {texture == null} RawImage: {_rawImage == null}");
+
+            // if (_rawImage == null)
+            //     _rawImage = GetComponentInChildren<RawImage>();
+            _rawImage.texture = texture;
         }
 
 
