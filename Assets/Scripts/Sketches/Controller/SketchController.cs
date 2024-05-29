@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Sketches.Model;
 using Sketches.Services;
 using Sketches.Utills;
@@ -13,7 +12,7 @@ namespace Sketches.Controller
 {
     public class SketchController : MonoBehaviour
     {
-        public Sketch Sketch { get; private set; }
+        public Sketch Sketch { get; set; }
 
 
         public RawImage RawImage;
@@ -41,7 +40,8 @@ namespace Sketches.Controller
 
         private void OnSketchClicked()
         {
-            CurrentSketchHolder.Instance.CurrentSketchController = this;
+            CurrentSketchHolder.Instance.CurrentSketchUrl = Sketch.ImageUrl;
+
             // Load next scene
             SceneManager.LoadScene("AppScene");
         }
@@ -66,11 +66,10 @@ namespace Sketches.Controller
 
         public async Task SetImageFromUrl(string url)
         {
-            
             if (string.IsNullOrEmpty(url)) return;
 
             var texture = await FetchImageFromUrl(url);
-            
+
             RawImage.texture = texture;
         }
 
@@ -82,7 +81,6 @@ namespace Sketches.Controller
             await imageLoader.LoadSprite(url).Then((sprite => { t = sprite.texture; }));
 
             return t;
-
         }
     }
 }

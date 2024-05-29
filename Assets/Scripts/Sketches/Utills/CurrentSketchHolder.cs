@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace Sketches.Utills
 {
+    
     public class CurrentSketchHolder : MonoBehaviour
     {
         public static CurrentSketchHolder Instance;
-
+        
 
         private void Awake()
         {
@@ -19,6 +20,6 @@ namespace Sketches.Utills
         }
 
 
-        public SketchController CurrentSketchController { get; set; }
+        [field: SerializeField] public string CurrentSketchUrl { get; set; }
     }
 }

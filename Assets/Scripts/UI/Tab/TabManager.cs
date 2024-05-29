@@ -4,10 +4,9 @@ using UnityEngine;
 
 namespace UI.Tab
 {
-    
-    
     public class TabManager : MonoBehaviour
     {
+        [SerializeField] private ButtonController defaultSelectedButton;
         [SerializeField] private List<ButtonController> tabItems = new();
 
 
@@ -17,6 +16,9 @@ namespace UI.Tab
             {
                 b.AddOnClick(() => { setUp(b); });
             }
+
+            defaultSelectedButton.Enable();
+            defaultSelectedButton.setModificationType();
         }
 
         private void setUp(ButtonController buttonController)

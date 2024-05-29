@@ -5332,6 +5332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2d4fc9d0b558c7469dc4c28ce95d5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CurrentSketchUrl>k__BackingField: 
 --- !u!4 &1347486971
 Transform:
   m_ObjectHideFlags: 0

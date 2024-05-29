@@ -33,7 +33,7 @@ namespace UI.Controller
 
         private void OnDisable()
         {
-            ImageLoader.ClearCache();
+            //ImageLoader.ClearCache();
         }
 
         public async void OnTryAgainClicked()

@@ -1,5 +1,4 @@
-﻿using Sketches.Controller;
-using Sketches.Modification.Enum;
+﻿using Sketches.Modification.Enum;
 using UI.Slider.Controller;
 using UnityEngine;
 
@@ -7,21 +6,37 @@ namespace Sketches.Modification.Manager
 {
     public class ModificationManager : MonoBehaviour
     {
-        [SerializeField] private Sprite testSprite;
         [SerializeField] private SliderController mainSlider;
-
+        [SerializeField] private ARSketchController _currentSketchController;
 
         public static ModificationManager Instance { get; private set; }
 
-        private ModificationType _currentModificationType = ModificationType.Transparency;
-        private ARSketchController _currentSketchController;
 
+        [Space, Header("Default Values")] [SerializeField]
+        private float defaultTransparency;
+
+        [SerializeField] private float defaultRotation;
+        [SerializeField] private float defaultScale;
+
+
+        private ModificationType _currentModificationType = ModificationType.Transparency;
 
         // stored values!
         private float scaleSliderValue;
         private float rotationSliderValue;
         private float transparencySliderValue;
 
+
+        private void Init()
+        {
+            scaleSliderValue = defaultScale;
+            transparencySliderValue = defaultTransparency;
+            rotationSliderValue = defaultRotation;
+
+            _currentSketchController.SetScale(defaultScale);
+            _currentSketchController.SetRotation(defaultRotation);
+            _currentSketchController.SetTransparency(defaultTransparency);
+        }
 
         private void Awake()
         {
@@ -31,8 +46,11 @@ namespace Sketches.Modification.Manager
                 Instance = this;
         }
 
+
         private void Start()
         {
+            Init();
+
             mainSlider.onValueChanged += f =>
             {
                 switch (_currentModificationType)

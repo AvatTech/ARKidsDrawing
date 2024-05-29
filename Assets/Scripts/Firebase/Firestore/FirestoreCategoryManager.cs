@@ -16,6 +16,7 @@ namespace Firebase.Firestore
         public async Task<QuerySnapshot> GetCategories()
         {
             var collection = _firestore.Collection(CollectionPath);
+            
             return await collection.GetSnapshotAsync();
 
         }

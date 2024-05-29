@@ -1,6 +1,8 @@
+using System;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class LoggerScript : MonoBehaviour
 {
@@ -9,12 +11,11 @@ public class LoggerScript : MonoBehaviour
     public static LoggerScript Instance { get; private set; }
     private StringBuilder _stringBuilder = new();
 
-    [SerializeField] private bool isActive = false;
+    [SerializeField] private bool isActive;
 
-    public void setIsActive(bool activateStatus)
+    private void Start()
     {
-        this.isActive = activateStatus;
-        Debug.Log("is active situation is ignored for you !");
+        gameObject.SetActive(isActive);
     }
 
 
@@ -37,7 +38,17 @@ public class LoggerScript : MonoBehaviour
     {
         _stringBuilder.Append(message);
         _stringBuilder.Append("\n");
+        UpdateText();
+    }
 
+    public void UpdateText()
+    {
         textMeshProLogger.SetText(_stringBuilder);
+    }
+
+    public void Clear()
+    {
+        _stringBuilder.Clear();
+        UpdateText();
     }
 }

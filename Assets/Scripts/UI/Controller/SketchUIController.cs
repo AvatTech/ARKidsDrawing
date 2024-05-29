@@ -61,6 +61,7 @@ namespace UI.Controller
             {
                 GameObject sketchObj = Instantiate(sketchPrefab, sketchParentObject.transform);
                 SketchController controller = sketchObj.GetComponent<SketchController>();
+                controller.Sketch = sketch;
                 currentSketches.Add(controller);
                 await controller.SetImageFromUrl(sketch.ImageUrl);
             }

@@ -11,8 +11,6 @@ namespace UI.Button.Controllers
     public class ButtonController : MonoBehaviour
     {
         [field: SerializeField] public string Label { set; get; }
-        public UnityEvent OnClickEvent;
-
 
         [Space, Header("Modification")] [SerializeField]
         private ModificationType modificationType = ModificationType.None;
@@ -20,32 +18,27 @@ namespace UI.Button.Controllers
         [SerializeField] private GameObject enablePanel;
 
 
-        private UnityEngine.UI.Button _button;
+        [HideInInspector] public UnityEngine.UI.Button Button;
         private TextMeshProUGUI _textMeshPro;
 
-        private void Start()
+        private void Awake()
         {
             Init();
         }
 
         private void Init()
         {
-            _button = GetComponent<UnityEngine.UI.Button>();
-
-            // Essential listeners for button
-            _button.onClick.AddListener(OnClickEvent.Invoke);
-            _button.onClick.AddListener(setModificationType); // change current modification when clicked
-
-
+            Button = GetComponent<UnityEngine.UI.Button>();
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
-            _textMeshPro.SetText(Label);
+            
+            AddOnClick(setModificationType); // change current modification when clicked
 
+            _textMeshPro.SetText(Label);
             enablePanel.SetActive(false);
 
-            //_button.
         }
 
-        private void setModificationType()
+        public void setModificationType()
         {
             ModificationManager.Instance.SetModificationType(modificationType);
             restoreModificationValueOnSlider();
@@ -58,22 +51,20 @@ namespace UI.Button.Controllers
 
         public void AddOnClick(Action onClick)
         {
-            OnClickEvent.AddListener(onClick.Invoke);
+            Button.onClick.AddListener(onClick.Invoke);
         }
-
+        
 
         public void Enable()
         {
-            _button.Select();
+            Button.Select();
             enablePanel.SetActive(true);
-            //_textMeshPro.CrossFadeAlpha(1, 0.2f, true);
             Debug.Log($"Button <{Label}> has been enabled.");
         }
 
         public void Disable()
         {
             enablePanel.SetActive(false);
-            //_textMeshPro.CrossFadeAlpha(0.6f, 0.1f, true);
             Debug.Log($"Button <{Label}> has been disabled.");
         }
     }
