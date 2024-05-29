@@ -14,13 +14,10 @@ namespace Sketches.Services
     {
         [Inject] private readonly SketchRepository _sketchRepository;
 
-        private List<Sketch> sketches = new();
-
-
-        private void OnQueryReceived(QuerySnapshot querySnapshot)
+        private List<Sketch> OnQueryReceived(QuerySnapshot querySnapshot)
         {
-            sketches.Clear();
-
+            List<Sketch> sketches = new();
+            
             foreach (var doc in querySnapshot.Documents)
             {
                 var dic = doc.ToDictionary();
@@ -36,6 +33,8 @@ namespace Sketches.Services
 
                 sketches.Add(sketch);
             }
+
+            return sketches;
         }
 
 
@@ -43,12 +42,10 @@ namespace Sketches.Services
         {
             QuerySnapshot snapshot = await _sketchRepository.GetSketches(categoryId);
 
-            OnQueryReceived(snapshot);
-
-            await Task.Yield();
+            var readySketches = OnQueryReceived(snapshot);
 
 
-            return sketches;
+            return readySketches;
         }
     }
 }

@@ -26,14 +26,14 @@ namespace Installer
 
         private void InstallServices()
         {
-            Container.Bind<FetchCategoriesService>().AsTransient();
-            Container.Bind<FetchSketchesService>().AsTransient();
+            Container.Bind<FetchCategoriesService>().AsSingle();
+            Container.Bind<FetchSketchesService>().AsSingle();
         }
 
         private void InstallFirestore()
         {
-            Container.Bind<FirestoreCategoryManager>().AsTransient();
-            Container.Bind<FirestoreSketchManager>().AsTransient();
+            Container.Bind<FirestoreCategoryManager>().AsSingle();
+            Container.Bind<FirestoreSketchManager>().AsSingle();
         }
     }
 }

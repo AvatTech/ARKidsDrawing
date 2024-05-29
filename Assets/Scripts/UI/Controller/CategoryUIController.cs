@@ -78,9 +78,6 @@ namespace UI.Controller
 
             SplashScreenController.Instance.SetState(SplashScreenState.Done);
 
-            categories.Clear();
-
-            await Task.Yield();
         }
 
 

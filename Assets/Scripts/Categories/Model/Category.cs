@@ -8,7 +8,7 @@ namespace Categories.Model
         public string Name { get; private set; }
         public string Id { get; private set; }
         public string CoverImageUrl { get; private set; }
-
+        public List<Sketch> Sketches { get; set; }
 
 
         public Category(string name, string id, string coverImageUrl)
@@ -16,6 +16,7 @@ namespace Categories.Model
             Name = name;
             Id = id;
             CoverImageUrl = coverImageUrl;
+            Sketches = new List<Sketch>();
         }
     }
 }

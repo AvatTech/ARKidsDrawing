@@ -46,10 +46,9 @@ namespace UI.Controller
 
         private async Task FetchSketches()
         {
-            _sketches = await _fetchSketchesService.FetchSketchesById(_currentCategoryManager.CurrentCategory.Id);
+            //_sketches = await _fetchSketchesService.FetchSketchesById(_currentCategoryManager.CurrentCategory.Id);
 
-            await Task.Yield();
-
+            _sketches = _currentCategoryManager.CurrentCategory.Sketches;
 
             await SetUpSketchItems(_sketches);
         }
