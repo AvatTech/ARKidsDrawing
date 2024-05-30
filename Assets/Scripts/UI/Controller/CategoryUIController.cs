@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
+using ModestTree;
 using Network;
 using UnityEngine;
 using Zenject;
@@ -19,15 +21,20 @@ namespace UI.Controller
 
         [SerializeField] private SplashScreenController _splashScreenController;
 
+        [Space, SerializeField] private UnityEngine.UI.Button tryAgainButton;
+
         private List<Category> _categories = new();
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
-
-
-        private async void OnEnable()
+        
+        
+        private async void Start()
         {
+            tryAgainButton.onClick.AddListener(OnTryAgainClicked);
             await SyncCategories();
+
         }
+
 
 
         public async void OnTryAgainClicked()
@@ -55,6 +62,7 @@ namespace UI.Controller
                     Debug.Log("we dont have internet * *");
                     return;
                 }
+
                 Debug.Log("we have internet * *");
             }
 
@@ -97,8 +105,6 @@ namespace UI.Controller
                 ConnectionChecker.IsNetworkChecked = true;
                 return true;
             }
-            
-            
         }
     }
 }

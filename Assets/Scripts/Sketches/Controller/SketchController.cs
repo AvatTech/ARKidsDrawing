@@ -57,8 +57,9 @@ namespace Sketches.Controller
 
             Debug.Log($"for {name}: texture: {texture == null} RawImage: {_rawImage == null}");
 
-            // if (_rawImage == null)
-            //     _rawImage = GetComponentInChildren<RawImage>();
+            if (_rawImage == null)
+                _rawImage = GetComponentInChildren<RawImage>();
+            
             _rawImage.texture = texture;
         }
 
