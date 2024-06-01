@@ -5,6 +5,8 @@ using Repositories;
 using Sketches.Builder;
 using Sketches.Services;
 using Storage;
+using Story.Manager;
+using UnityEngine;
 using Zenject;
 
 namespace Installer
@@ -14,9 +16,20 @@ namespace Installer
         public override void InstallBindings()
         {
             InstallStorages();
+            
             InstallRepositories();
+            
             InstallServices();
+            
             InstallFirestore();
+            
+            InstallStory();
+        }
+
+        private void InstallStory()
+        {
+            Container.Bind<StoryManager>().FromNewComponentOnNewGameObject().AsSingle().OnInstantiated(
+                (context, o) => { Debug.Log("Instantiated!!!!"); });
         }
 
         private void InstallStorages()

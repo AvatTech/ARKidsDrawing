@@ -6,6 +6,8 @@ using Categories.Model;
 using Categories.Services;
 using ModestTree;
 using Network;
+using Story.Controller;
+using Story.Manager;
 using UnityEngine;
 using Zenject;
 
@@ -26,15 +28,18 @@ namespace UI.Controller
         private List<Category> _categories = new();
 
         [Inject] private readonly FetchCategoriesService _fetchCategoriesService;
-        
-        
+
+        [Inject] private readonly StoryManager _storyManager;
+
+
         private async void Start()
         {
+            var storyPanel = GetComponent<StoryPanelController>();
+            _storyManager.storyPanelControllers.Add(storyPanel);
+
             tryAgainButton.onClick.AddListener(OnTryAgainClicked);
             await SyncCategories();
-
         }
-
 
 
         public async void OnTryAgainClicked()
@@ -79,6 +84,8 @@ namespace UI.Controller
 
         private async Task SetUpCategoryItems(List<Category> categories)
         {
+            Debug.Log($"Category null: {_categories == null}");
+
             foreach (Category cat in categories)
             {
                 GameObject categoryObject = Instantiate(categoryItemPrefab, categoryParentObject.transform);
@@ -96,7 +103,7 @@ namespace UI.Controller
         {
             if (!await ConnectionChecker.IsConnectedToNetwork())
             {
-                Debug.Log("kheyli bad...");
+                Debug.Log("Kheili bad...");
                 SplashScreenController.Instance.SetState(SplashScreenState.Failed);
                 return false;
             }

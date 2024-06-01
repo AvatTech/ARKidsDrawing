@@ -2,36 +2,87 @@
 using Categories.Model;
 using Newtonsoft.Json;
 using UnityEngine;
+using Utills;
 
 namespace Storage
 {
+    //todo: Clean storage anti-pattern and bad code.
+
     public interface ILocalStorage
     {
-        void SaveData(List<Category> categories);
-        List<Category> LoadData();
+        public bool TryLoadInt(string key, out int value);
+        public void SaveInt(string key, int value);
+
+        
+        void SaveCategory(List<Category> categories);
+        List<Category> LoadCategory();
     }
 
 
     public class LocalStorage : ILocalStorage
     {
-        private const string KEY_CATEGORIES = "KEY_CATEGORIES";
+        public void SaveData(string key, object value)
+        {
+            var jsonData = JsonConvert.SerializeObject(value);
+
+            PlayerPrefs.SetString(key, jsonData);
+            PlayerPrefs.Save();
+        }
+
+        public bool TryLoadData<T>(string key, out T value)
+        {
+            value = default;
+
+            if (PlayerPrefs.HasKey(key))
+            {
+                string jsonData = PlayerPrefs.GetString(key);
+                value = JsonConvert.DeserializeObject<T>(jsonData);
+                return true;
+            }
+
+            return false;
+        }
+
+        
+        
+        //----------------------------------
+
+        public bool TryLoadInt(string key, out int value)
+        {
+            value = default;
+
+            if (PlayerPrefs.HasKey(key))
+            {
+                value = PlayerPrefs.GetInt(key);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void SaveInt(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+            PlayerPrefs.Save();
+        }
 
 
-        public void SaveData(List<Category> categories)
+        //----------------------------------------------------------
+        public void SaveCategory(List<Category> categories)
         {
             var jsonData = JsonConvert.SerializeObject(categories);
             //string jsonData = 
-            PlayerPrefs.SetString(KEY_CATEGORIES, jsonData);
+            PlayerPrefs.SetString(Constants.KEY_CATEGORIES, jsonData);
             PlayerPrefs.Save();
 
             Debug.Log(jsonData);
         }
 
-        public List<Category> LoadData()
+        public List<Category> LoadCategory()
         {
-            if (PlayerPrefs.HasKey(KEY_CATEGORIES))
+            if (PlayerPrefs.HasKey(Constants.KEY_CATEGORIES))
             {
-                string jsonData = PlayerPrefs.GetString(KEY_CATEGORIES);
+                string jsonData = PlayerPrefs.GetString(Constants.KEY_CATEGORIES);
                 return JsonConvert.DeserializeObject<List<Category>>(jsonData);
             }
 

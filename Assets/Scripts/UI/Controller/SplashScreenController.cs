@@ -1,11 +1,16 @@
+using System;
+using Story.Controller;
+using Story.Manager;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace UI.Controller
 {
     public class SplashScreenController : MonoBehaviour
     {
         public static SplashScreenController Instance { get; private set; }
+
 
         private void Awake()
         {
@@ -16,10 +21,11 @@ namespace UI.Controller
 
             SetState(SplashScreenState.Loading);
         }
+
         [SerializeField] private GameObject tryAgainButton;
         [SerializeField] private GameObject spinner;
         [SerializeField] private TextMeshProUGUI text;
-        
+
         public void SetState(SplashScreenState splashScreenState)
         {
             switch (splashScreenState)

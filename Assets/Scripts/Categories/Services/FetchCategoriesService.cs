@@ -23,7 +23,7 @@ namespace Categories.Services
         public async Task<List<Category>> FetchCategoryList()
         {
             // load data from storage
-            var storageCategories = _localStorage.LoadData();
+            var storageCategories = _localStorage.LoadCategory();
 
             // return data if not null
             if (storageCategories is not null && storageCategories.Count > 0)
@@ -34,6 +34,7 @@ namespace Categories.Services
 
             // get data from fb
             Task<QuerySnapshot> currentTask = null;
+
             await _categoryRepository.GetCategories().ContinueWith(task =>
             {
                 currentTask = task;
@@ -44,10 +45,11 @@ namespace Categories.Services
             // setup data
             var dataToSave = await OnQueryReceived(currentTask?.Result);
 
-            // add fetched data to storage
-            _localStorage.SaveData(dataToSave);
 
-            
+            // add fetched data to storage
+            _localStorage.SaveCategory(dataToSave);
+
+            storageCategories = _localStorage.LoadCategory();
 
             return storageCategories;
         }

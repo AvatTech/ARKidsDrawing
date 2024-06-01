@@ -16,6 +16,7 @@ namespace UI.Controller
     {
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
+        [SerializeField] private GameObject splashPagePanel;
 
         private CurrentCategoryManager _currentCategoryManager;
 
@@ -35,6 +36,14 @@ namespace UI.Controller
         {
             _currentCategoryManager = null;
 
+            categoryPanel.SetActive(false);
+            mainPagePanel.SetActive(true);
+        }
+
+
+        public void ShowSplashPage()
+        {
+            splashPagePanel.SetActive(true);
             categoryPanel.SetActive(false);
             mainPagePanel.SetActive(true);
         }
