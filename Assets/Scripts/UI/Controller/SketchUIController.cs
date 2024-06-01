@@ -48,8 +48,10 @@ namespace UI.Controller
 
 
         private async Task SetUpSketchItems(List<Sketch> sketches)
-        
         {
+            
+            Debug.Log("fetching sketches...");
+            
             var index = 1;
             foreach (var sketch in sketches)
             {
