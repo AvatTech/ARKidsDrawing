@@ -20,6 +20,19 @@ namespace Categories.Services
         [Inject] private readonly ILocalStorage _localStorage;
 
 
+        public async void FetchAndSaveCategories()
+        {
+            Task<QuerySnapshot> thisTask = null;
+
+            // get data from fb and save it
+            await _categoryRepository.GetCategories().ContinueWith(task => { thisTask = task; });
+
+            var data = await OnQueryReceived(thisTask.Result);
+
+            // add fetched data to storage
+            _localStorage.SaveCategory(data);
+        }
+
         public async Task<List<Category>> FetchCategoryList()
         {
             // load data from storage
@@ -28,6 +41,8 @@ namespace Categories.Services
             // return data if not null
             if (storageCategories is not null && storageCategories.Count > 0)
             {
+                FetchAndSaveCategories();
+                
                 return storageCategories;
             }
 
