@@ -7,20 +7,22 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:396292199698:android:80449bab1ad196c5754fcb",
+        "mobilesdk_app_id": "1:396292199698:ios:862e66089d851cb2754fcb",
         "android_client_info": {
           "package_name": "com.avat.sketchbicchildar"
         }
       },
-      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyChRI0OZPhpSDunV7FQXJDRL5X_1z-ilg8"
+          "current_key": "AIzaSyDUddiW8_rNb-bFkX0H4IRhAMdhPJTKJfc"
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 0
+        },
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "status": 1
         }
       }
     }
