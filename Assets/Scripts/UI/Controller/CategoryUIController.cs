@@ -34,6 +34,7 @@ namespace UI.Controller
 
         private async void Start()
         {
+            
             var storyPanel = GetComponent<StoryPanelController>();
             _storyManager.storyPanelControllers.Add(storyPanel);
 
@@ -56,20 +57,20 @@ namespace UI.Controller
 
         private async Task FetchCategories()
         {
-            if (!ConnectionChecker.IsNetworkChecked)
-            {
-                Debug.Log("Network checkinng..");
-                _splashScreenController.SetState(SplashScreenState.Loading);
-
-                // Check connection
-                if (!await CheckConnection())
-                {
-                    Debug.Log("we dont have internet * *");
-                    return;
-                }
-
-                Debug.Log("we have internet * *");
-            }
+            // if (!ConnectionChecker.IsNetworkChecked)
+            // {
+            //     Debug.Log("Network checkinng..");
+            //     _splashScreenController.SetState(SplashScreenState.Loading);
+            //
+            //     // Check connection
+            //     if (!await CheckConnection())
+            //     {
+            //         Debug.Log("we dont have internet * *");
+            //         return;
+            //     }
+            //
+            //     Debug.Log("we have internet * *");
+            // }
 
 
             // Get categories list

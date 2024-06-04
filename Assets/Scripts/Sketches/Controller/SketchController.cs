@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Sketches.Model;
 using Sketches.Utills;
 using Unity.Mathematics;
@@ -16,11 +17,16 @@ namespace Sketches.Controller
 
         private RawImage _rawImage;
         private Button _button;
-
+        private bool _isDestroy;
 
         private void Start()
         {
             Init();
+        }
+
+        private void OnDestroy()
+        {
+            _isDestroy = true;
         }
 
         private void Init()
@@ -55,8 +61,13 @@ namespace Sketches.Controller
 
             var texture = await FetchImageFromUrl(url);
 
-            Debug.Log($"for {name}: texture: {texture == null} RawImage: {_rawImage == null}");
-
+            if (_isDestroy)
+            {
+                return;
+            }
+            
+            // Debug.Log($"for {name}: texture: {texture == null} RawImage: {_rawImage == null}");
+            
             if (_rawImage == null)
                 _rawImage = GetComponentInChildren<RawImage>();
             

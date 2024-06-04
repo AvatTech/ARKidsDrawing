@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Vuforia;
+using Zenject;
 
 namespace UI.Controller
 {
@@ -12,12 +13,16 @@ namespace UI.Controller
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private GameObject waitingObject;
 
+        [Inject] private ReviewManager _reviewManager;
+        
         private void Start()
         {
 
             planeFinderBehaviour.OnAutomaticHitTest.AddListener(HandleAutomaticHitTest);
 
             waitingObject.SetActive(true);
+            
+            _reviewManager.EnableARSessionCheck();
         }
 
         

@@ -4,11 +4,14 @@ using System.Threading.Tasks;
 using Categories.Model;
 using Categories.Services;
 using Categories.Utills;
+using Extensions.Unity.ImageLoader;
 using Sketches.Controller;
 using Sketches.Model;
 using Sketches.Services;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace UI.Controller
@@ -17,8 +20,10 @@ namespace UI.Controller
     {
         [SerializeField] private GameObject sketchPrefab;
         [SerializeField] private GameObject sketchParentObject;
+        [SerializeField] private RawImage categoryIcon;
+        [SerializeField] private TextMeshProUGUI categoryTitleText;
 
-        private List<SketchController> currentSketchesObjects = new();
+        private readonly List<SketchController> _currentSketchesObjects = new();
 
         private List<Sketch> _sketches = new();
 
@@ -26,8 +31,14 @@ namespace UI.Controller
         private async void OnEnable()
         {
             if (CurrentCategoryManager.Instance.CurrentCategory == null)
+            {
+                categoryIcon.texture = null;
+                categoryTitleText.text = string.Empty;
                 return;
+            }
 
+            await ImageLoader.LoadSprite(CurrentCategoryManager.Instance.CurrentCategory.CoverImageUrl).ThenSet(categoryIcon);
+            categoryTitleText.text = CurrentCategoryManager.Instance.CurrentCategory.Name;
 
             // Fetch sketches!
             await FetchSketches();
@@ -49,9 +60,8 @@ namespace UI.Controller
 
         private async Task SetUpSketchItems(List<Sketch> sketches)
         {
-            
             Debug.Log("fetching sketches...");
-            
+
             var index = 1;
             foreach (var sketch in sketches)
             {
@@ -59,7 +69,7 @@ namespace UI.Controller
                 sketchObj.name = $"{index++}";
                 var controller = sketchObj.GetComponent<SketchController>();
                 controller.Sketch = sketch;
-                currentSketchesObjects.Add(controller);
+                _currentSketchesObjects.Add(controller);
                 await controller.SetImageFromUrl(sketch.ImageUrl);
             }
         }
@@ -67,13 +77,13 @@ namespace UI.Controller
 
         private void RemoveSketches()
         {
-            for (var i = currentSketchesObjects.Count - 1; i >= 0; i--)
+            for (var i = _currentSketchesObjects.Count - 1; i >= 0; i--)
             {
-                Destroy(currentSketchesObjects[i].gameObject);
+                Destroy(_currentSketchesObjects[i].gameObject);
             }
 
             _sketches.Clear();
-            currentSketchesObjects.Clear();
+            _currentSketchesObjects.Clear();
         }
     }
 }
