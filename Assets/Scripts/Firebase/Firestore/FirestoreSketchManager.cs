@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Firebase.Extensions;
-using Unity.VisualScripting;
+﻿using System.Threading.Tasks;
 
 namespace Firebase.Firestore
 {

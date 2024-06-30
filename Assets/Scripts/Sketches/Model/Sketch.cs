@@ -1,8 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace Sketches.Model
+﻿namespace Sketches.Model
 {
     public class Sketch
     {

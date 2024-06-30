@@ -45,6 +45,5 @@ public class SettingsPanelController : MonoBehaviour
     private void OnRateClicked()
     {
         _reviewManager.Review();
-        ImageLoader.ClearCache();
     }
 }

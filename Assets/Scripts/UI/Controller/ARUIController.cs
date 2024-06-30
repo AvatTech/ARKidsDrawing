@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,21 +10,20 @@ namespace UI.Controller
     {
         [SerializeField] private PlaneFinderBehaviour planeFinderBehaviour;
         [SerializeField] private TextMeshProUGUI text;
-        [SerializeField] private GameObject waitingObject;
+        [SerializeField] private GameObject waitingPanel;
+        [SerializeField] private GameObject helpPanel;
 
         [Inject] private ReviewManager _reviewManager;
-        
+
         private void Start()
         {
-
             planeFinderBehaviour.OnAutomaticHitTest.AddListener(HandleAutomaticHitTest);
 
-            waitingObject.SetActive(true);
-            
+            waitingPanel.SetActive(true);
+
             _reviewManager.EnableARSessionCheck();
         }
 
-        
 
         private bool GroundPlaneHitReceived = false;
         private long mAutomaticHitTestFrameCount;
@@ -36,9 +34,8 @@ namespace UI.Controller
 
             var targetStatus = VuforiaBehaviour.Instance.DevicePoseBehaviour.TargetStatus;
             var isVisible = IsTrackedOrLimited(targetStatus) && GroundPlaneHitReceived;
-            
-            waitingObject.SetActive(!isVisible);
 
+            waitingPanel.SetActive(!isVisible);
         }
 
 
@@ -69,6 +66,11 @@ namespace UI.Controller
         public void OnExitButton()
         {
             SceneManager.LoadScene("MainMenu");
+        }
+
+        public void OnHelpButton()
+        {
+            helpPanel.SetActive(true);
         }
     }
 }

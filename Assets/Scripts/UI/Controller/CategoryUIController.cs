@@ -1,14 +1,14 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
-using ModestTree;
 using Network;
 using Story.Controller;
 using Story.Manager;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace UI.Controller
@@ -21,7 +21,7 @@ namespace UI.Controller
         [SerializeField, Tooltip("Category Item which has Category Controller.")]
         private GameObject categoryItemPrefab;
 
-        [SerializeField] private SplashScreenController _splashScreenController;
+        [FormerlySerializedAs("_splashScreenController")] [SerializeField] private LoadingController loadingController;
 
         [Space, SerializeField] private UnityEngine.UI.Button tryAgainButton;
 
@@ -31,10 +31,10 @@ namespace UI.Controller
 
         [Inject] private readonly StoryManager _storyManager;
 
+        [Inject] private ReviewManager _reviewManager;
 
         private async void Start()
         {
-            
             var storyPanel = GetComponent<StoryPanelController>();
             _storyManager.storyPanelControllers.Add(storyPanel);
 
@@ -57,20 +57,20 @@ namespace UI.Controller
 
         private async Task FetchCategories()
         {
-            // if (!ConnectionChecker.IsNetworkChecked)
-            // {
-            //     Debug.Log("Network checkinng..");
-            //     _splashScreenController.SetState(SplashScreenState.Loading);
-            //
-            //     // Check connection
-            //     if (!await CheckConnection())
-            //     {
-            //         Debug.Log("we dont have internet * *");
-            //         return;
-            //     }
-            //
-            //     Debug.Log("we have internet * *");
-            // }
+            if (!ConnectionChecker.IsNetworkChecked)
+            {
+                Debug.Log("Network checkinng..");
+                loadingController.SetState(SplashScreenState.Loading);
+
+                // Check connection
+                if (!await CheckConnection())
+                {
+                    Debug.Log("we dont have internet * *");
+                    return;
+                }
+
+                Debug.Log("we have internet * *");
+            }
 
 
             // Get categories list
@@ -79,7 +79,7 @@ namespace UI.Controller
             // setup category items in the scene
             await SetUpCategoryItems(_categories);
 
-            _splashScreenController.SetState(SplashScreenState.Done);
+            loadingController.SetState(SplashScreenState.Done);
         }
 
 
@@ -96,7 +96,9 @@ namespace UI.Controller
                 await controller.SetImageFromUrl(cat.CoverImageUrl, exception => throw exception);
             }
 
-            _splashScreenController.SetState(SplashScreenState.Done);
+            loadingController.SetState(SplashScreenState.Done);
+
+            StartCoroutine(ReviewRoutine());
         }
 
 
@@ -105,7 +107,7 @@ namespace UI.Controller
             if (!await ConnectionChecker.IsConnectedToNetwork())
             {
                 Debug.Log("Kheili bad...");
-                SplashScreenController.Instance.SetState(SplashScreenState.Failed);
+                LoadingController.Instance.SetState(SplashScreenState.Failed);
                 return false;
             }
             else
@@ -113,6 +115,13 @@ namespace UI.Controller
                 ConnectionChecker.IsNetworkChecked = true;
                 return true;
             }
+        }
+
+        private IEnumerator ReviewRoutine()
+        {
+            yield return new WaitForSeconds(2f);
+            
+            _reviewManager.CheckReview();           
         }
     }
 }

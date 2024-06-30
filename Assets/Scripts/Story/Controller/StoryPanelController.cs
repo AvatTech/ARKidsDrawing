@@ -1,4 +1,3 @@
-using System;
 using Story.Manager;
 using UnityEngine;
 using UnityEngine.UI;

@@ -13,9 +13,6 @@ namespace Network
         public static bool IsNetworkChecked = false;
 
 
-       
-
-
         // check for connection
         public static async Task<bool> IsConnectedToNetwork()
         {

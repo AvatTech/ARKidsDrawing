@@ -1,7 +1,6 @@
 ﻿using System;
 using Sketches.Model;
 
-
 namespace Sketches.Builder
 {
     public class SketchBuilder

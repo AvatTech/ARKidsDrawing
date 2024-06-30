@@ -1,6 +1,9 @@
 using Bayegan.Builder;
 using Bayegan.Storage.Abstractions;
-using UnityEngine;
+
+#if UNITY_IOS
+using UnityEngine.iOS;
+#endif
 
 public class ReviewManager
 {
@@ -8,6 +11,8 @@ public class ReviewManager
     private const string LaunchCounterKey = "LaunchCounter";
 
     private readonly IBayeganDictionary _bayegan = new BayeganDictionaryBuilder().Build();
+
+    private bool _isReviewRequested;
 
     public ReviewManager()
     {
@@ -24,11 +29,23 @@ public class ReviewManager
         var launcherCounter = _bayegan.Load(LaunchCounterKey, 0);
         _bayegan.Store(LaunchCounterKey, ++launcherCounter);
     }
-    
-    public void Review()
+
+    public void CheckReview()
     {
         var launcherCounter = _bayegan.Load(LaunchCounterKey, 0);
         var arSession = _bayegan.Load(ARSessionKey, false);
-        Debug.Log($"launcher counter: {launcherCounter}, ar session: {arSession}");
+
+        if (arSession && launcherCounter % 2 == 0 && _isReviewRequested == false)
+        {
+            _isReviewRequested = true;
+            Review();
+        }
+    }
+
+    public void Review()
+    {
+#if UNITY_IOS
+        Device.RequestStoreReview();
+#endif
     }
 }

@@ -3,7 +3,6 @@ using Sketches.Modification.Enum;
 using Sketches.Modification.Manager;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UI.Button.Controllers
 {
@@ -30,12 +29,11 @@ namespace UI.Button.Controllers
         {
             Button = GetComponent<UnityEngine.UI.Button>();
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
-            
+
             AddOnClick(setModificationType); // change current modification when clicked
 
             _textMeshPro.SetText(Label);
             enablePanel.SetActive(false);
-
         }
 
         public void setModificationType()
@@ -53,7 +51,7 @@ namespace UI.Button.Controllers
         {
             Button.onClick.AddListener(onClick.Invoke);
         }
-        
+
 
         public void Enable()
         {

@@ -1,8 +1,6 @@
 using Categories.Services;
 using Firebase.Firestore;
-using Network;
 using Repositories;
-using Sketches.Builder;
 using Sketches.Services;
 using Storage;
 using Story.Manager;
@@ -16,13 +14,13 @@ namespace Installer
         public override void InstallBindings()
         {
             InstallStorages();
-            
+
             InstallRepositories();
-            
+
             InstallServices();
-            
+
             InstallFirestore();
-            
+
             InstallStory();
         }
 

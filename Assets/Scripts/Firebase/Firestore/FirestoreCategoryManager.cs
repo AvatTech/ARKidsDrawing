@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Firebase.Extensions;
-using Unity.VisualScripting;
-using UnityEngine;
+﻿using System.Threading.Tasks;
 
 namespace Firebase.Firestore
 {
@@ -11,13 +7,12 @@ namespace Firebase.Firestore
         private const string CollectionPath = "categories";
 
         private readonly FirebaseFirestore _firestore = FirebaseFirestore.DefaultInstance;
-        
+
         public async Task<QuerySnapshot> GetCategories()
         {
             var collection = _firestore.Collection(CollectionPath);
-            
-            return await collection.GetSnapshotAsync();
 
+            return await collection.GetSnapshotAsync();
         }
     }
 }

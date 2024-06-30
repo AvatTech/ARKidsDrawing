@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Categories.Model;
 using Firebase.Firestore;
@@ -8,7 +7,6 @@ using Sketches.Model;
 using Sketches.Services;
 using Storage;
 using Unity.Services.Core;
-using UnityEngine;
 using Zenject;
 
 namespace Categories.Services
@@ -42,7 +40,7 @@ namespace Categories.Services
             if (storageCategories is not null && storageCategories.Count > 0)
             {
                 FetchAndSaveCategories();
-                
+
                 return storageCategories;
             }
 

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Categories.Model;
 using Firebase.Firestore;
 using Repositories;
 using Sketches.Builder;
 using Sketches.Model;
-using UnityEngine;
 using Zenject;
 
 namespace Sketches.Services
@@ -17,7 +15,7 @@ namespace Sketches.Services
         private List<Sketch> OnQueryReceived(QuerySnapshot querySnapshot)
         {
             List<Sketch> sketches = new();
-            
+
             foreach (var doc in querySnapshot.Documents)
             {
                 var dic = doc.ToDictionary();

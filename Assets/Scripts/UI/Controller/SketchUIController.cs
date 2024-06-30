@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Categories.Model;
-using Categories.Services;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
 using Sketches.Controller;
 using Sketches.Model;
-using Sketches.Services;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace UI.Controller
 {
@@ -37,7 +31,8 @@ namespace UI.Controller
                 return;
             }
 
-            await ImageLoader.LoadSprite(CurrentCategoryManager.Instance.CurrentCategory.CoverImageUrl).ThenSet(categoryIcon);
+            await ImageLoader.LoadSprite(CurrentCategoryManager.Instance.CurrentCategory.CoverImageUrl)
+                .ThenSet(categoryIcon);
             categoryTitleText.text = CurrentCategoryManager.Instance.CurrentCategory.Name;
 
             // Fetch sketches!

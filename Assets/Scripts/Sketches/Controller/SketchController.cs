@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Sketches.Model;
 using Sketches.Utills;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -65,12 +63,12 @@ namespace Sketches.Controller
             {
                 return;
             }
-            
+
             // Debug.Log($"for {name}: texture: {texture == null} RawImage: {_rawImage == null}");
-            
+
             if (_rawImage == null)
                 _rawImage = GetComponentInChildren<RawImage>();
-            
+
             _rawImage.texture = texture;
         }
 

@@ -1,8 +1,6 @@
-using System;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class LoggerScript : MonoBehaviour
 {

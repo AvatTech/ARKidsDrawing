@@ -14,7 +14,7 @@ namespace Firebase.Messaging
         {
             //
         }
-        
+
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             //

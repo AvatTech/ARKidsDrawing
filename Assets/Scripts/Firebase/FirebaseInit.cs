@@ -1,5 +1,4 @@
 ﻿using Firebase.Analytics;
-using Firebase.Extensions;
 using UnityEngine;
 
 namespace Firebase

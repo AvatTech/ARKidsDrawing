@@ -13,7 +13,7 @@ namespace Storage
         public bool TryLoadInt(string key, out int value);
         public void SaveInt(string key, int value);
 
-        
+
         void SaveCategory(List<Category> categories);
         List<Category> LoadCategory();
     }
@@ -43,8 +43,7 @@ namespace Storage
             return false;
         }
 
-        
-        
+
         //----------------------------------
 
         public bool TryLoadInt(string key, out int value)

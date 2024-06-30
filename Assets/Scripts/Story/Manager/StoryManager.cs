@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Storage;
@@ -11,26 +12,33 @@ namespace Story.Manager
 {
     public class StoryManager : MonoBehaviour
     {
-        private int currentIndex = 0;
+        private int _currentIndex;
         public List<StoryPanelController> storyPanelControllers;
+        
 
         [Inject] private readonly ILocalStorage _localStorage;
 
-        private StoryPanelController mainPage = null;
+        private StoryPanelController _mainPage;
+
 
         private void Awake()
         {
-            storyPanelControllers = new();
+            storyPanelControllers = new List<StoryPanelController>();
         }
 
 
         private void Start()
         {
+            ShowStoryFlow();
+        }
+
+        private void ShowStoryFlow()
+        {
             storyPanelControllers.ForEach(controller =>
             {
                 if (controller.order == 10)
                 {
-                    mainPage = controller;
+                    _mainPage = controller;
                 }
             });
 
@@ -47,7 +55,7 @@ namespace Story.Manager
                 else
                 {
                     //Show main page
-                    ShowStory(storyPanelControllers.IndexOf(mainPage));
+                    ShowStory(storyPanelControllers.IndexOf(_mainPage));
                 }
             }
             else
@@ -57,23 +65,23 @@ namespace Story.Manager
                 _localStorage.SaveInt(Constants.KEY_FIRST_LAUNCH, 1);
             }
         }
-
+        
         public void NextStory()
         {
-            if (currentIndex + 1 >= storyPanelControllers.Count)
+            if (_currentIndex + 1 >= storyPanelControllers.Count)
                 return;
 
-            currentIndex++;
-            ShowStory(currentIndex);
+            _currentIndex++;
+            ShowStory(_currentIndex);
         }
 
         public void PreviousStory()
         {
-            if (currentIndex - 1 >= 0)
+            if (_currentIndex - 1 >= 0)
                 return;
 
-            currentIndex--;
-            ShowStory(currentIndex);
+            _currentIndex--;
+            ShowStory(_currentIndex);
         }
 
 

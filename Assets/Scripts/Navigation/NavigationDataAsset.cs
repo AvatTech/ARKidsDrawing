@@ -14,7 +14,7 @@ namespace Navigation
             else
                 Instance = this;
         }
-        
+
         [Space] public GameObject SplashScreenPanel;
         [Space] public GameObject MainScreenPanel;
         [Space] public GameObject SketchesScreenPanel;

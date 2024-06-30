@@ -1,14 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Categories;
-using Categories.Model;
-using Categories.Services;
 using Categories.Utills;
-using Sketches.Services;
 using UnityEngine;
-using Zenject;
-
 
 namespace UI.Controller
 {

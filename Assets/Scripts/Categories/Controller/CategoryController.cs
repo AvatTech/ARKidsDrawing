@@ -27,13 +27,13 @@ namespace Categories.Controller
         private void Awake()
         {
             _image = GetComponentInChildren<RawImage>();
-            
+
             _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
-            
+
             _button = GetComponent<Button>();
-            
+
             currentCategoryManager = CurrentCategoryManager.Instance;
-            
+
             _mainUIController = FindObjectOfType<MainUIController>();
 
             _button.onClick.AddListener(OnClick);
@@ -42,9 +42,8 @@ namespace Categories.Controller
 
         public void OnClick()
         {
-            
             currentCategoryManager.CurrentCategory = Category;
-            
+
             _mainUIController.ShowSketchesPanel();
         }
 
