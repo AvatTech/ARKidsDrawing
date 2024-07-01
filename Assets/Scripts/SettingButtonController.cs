@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VideoRecorder.Services;
 
 public class SettingButtonController : MonoBehaviour
 {
@@ -15,7 +16,10 @@ public class SettingButtonController : MonoBehaviour
 
     private void OnSettingsButton()
     {
+        
+        RecordingService.StartRecording();
+        
         // load settings panel
-        settingsPanel.SetActive(true);
+        //settingsPanel.SetActive(true);
     }
 }

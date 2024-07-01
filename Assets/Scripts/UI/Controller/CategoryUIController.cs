@@ -21,7 +21,7 @@ namespace UI.Controller
         [SerializeField, Tooltip("Category Item which has Category Controller.")]
         private GameObject categoryItemPrefab;
 
-        [FormerlySerializedAs("_splashScreenController")] [SerializeField] private LoadingController loadingController;
+        [SerializeField] private LoadingController loadingController;
 
         [Space, SerializeField] private UnityEngine.UI.Button tryAgainButton;
 
@@ -57,24 +57,28 @@ namespace UI.Controller
 
         private async Task FetchCategories()
         {
-            if (!ConnectionChecker.IsNetworkChecked)
-            {
-                Debug.Log("Network checkinng..");
-                loadingController.SetState(SplashScreenState.Loading);
-
-                // Check connection
-                if (!await CheckConnection())
-                {
-                    Debug.Log("we dont have internet * *");
-                    return;
-                }
-
-                Debug.Log("we have internet * *");
-            }
-
-
             // Get categories list
-            _categories = await _fetchCategoriesService.FetchCategoryList();
+            _categories = await _fetchCategoriesService.FetchCategoryList(loadingController);
+
+            if (_categories is null)
+                return;
+
+
+            // if (!ConnectionChecker.IsNetworkChecked)
+            // {
+            //     Debug.Log("Network checking..");
+            //     loadingController.SetState(SplashScreenState.Loading);
+            //
+            //     // Check connection
+            //     if (!await CheckConnection())
+            //     {
+            //         Debug.Log("we dont have internet * *");
+            //         return;
+            //     }
+            //
+            //     Debug.Log("we have internet * *");
+            // }
+
 
             // setup category items in the scene
             await SetUpCategoryItems(_categories);
@@ -102,26 +106,26 @@ namespace UI.Controller
         }
 
 
-        private async Task<bool> CheckConnection()
-        {
-            if (!await ConnectionChecker.IsConnectedToNetwork())
-            {
-                Debug.Log("Kheili bad...");
-                LoadingController.Instance.SetState(SplashScreenState.Failed);
-                return false;
-            }
-            else
-            {
-                ConnectionChecker.IsNetworkChecked = true;
-                return true;
-            }
-        }
+        // private async Task<bool> CheckConnection()
+        // {
+        //     if (!await ConnectionChecker.IsConnectedToNetwork())
+        //     {
+        //         Debug.Log("Kheili bad...");
+        //         LoadingController.Instance.SetState(SplashScreenState.Failed);
+        //         return false;
+        //     }
+        //     else
+        //     {
+        //         ConnectionChecker.IsNetworkChecked = true;
+        //         return true;
+        //     }
+        // }
 
         private IEnumerator ReviewRoutine()
         {
             yield return new WaitForSeconds(2f);
-            
-            _reviewManager.CheckReview();           
+
+            _reviewManager.CheckReview();
         }
     }
 }

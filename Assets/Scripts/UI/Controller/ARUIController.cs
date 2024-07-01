@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VideoRecorder.Services;
+using VoxelBusters.ReplayKit;
 using Vuforia;
 using Zenject;
 
@@ -70,7 +72,13 @@ namespace UI.Controller
 
         public void OnHelpButton()
         {
-            helpPanel.SetActive(true);
+            if (ReplayKitManager.IsRecording())
+                ReplayKitManager.StopRecording();
+            else
+                RecordingService.StartRecording();
+
+
+            //helpPanel.SetActive(true);
         }
     }
 }

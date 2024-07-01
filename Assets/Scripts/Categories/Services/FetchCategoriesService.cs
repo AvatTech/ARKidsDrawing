@@ -2,12 +2,16 @@
 using System.Threading.Tasks;
 using Categories.Model;
 using Firebase.Firestore;
+using Loading;
+using Network;
 using Repositories;
 using Sketches.Model;
 using Sketches.Services;
 using Storage;
+using UI.Controller;
 using Unity.Services.Core;
 using Zenject;
+using LoadingController = UI.Controller.LoadingController;
 
 namespace Categories.Services
 {
@@ -18,55 +22,72 @@ namespace Categories.Services
         [Inject] private readonly ILocalStorage _localStorage;
 
 
-        public async void FetchAndSaveCategories()
-        {
-            Task<QuerySnapshot> thisTask = null;
-
-            // get data from fb and save it
-            await _categoryRepository.GetCategories().ContinueWith(task => { thisTask = task; });
-
-            var data = await OnQueryReceived(thisTask.Result);
-
-            // add fetched data to storage
-            _localStorage.SaveCategory(data);
-        }
-
-        public async Task<List<Category>> FetchCategoryList()
+        /// <summary>
+        /// Load list of categories from cache
+        /// If cache is empty, return null
+        /// </summary>
+        /// <returns></returns>
+        public List<Category> LoadCategoriesFromCache()
         {
             // load data from storage
             var storageCategories = _localStorage.LoadCategory();
 
-            // return data if not null
-            if (storageCategories is not null && storageCategories.Count > 0)
-            {
-                FetchAndSaveCategories();
-
-                return storageCategories;
-            }
-
-
-            // get data from fb
-            Task<QuerySnapshot> currentTask = null;
-
-            await _categoryRepository.GetCategories().ContinueWith(task =>
-            {
-                currentTask = task;
-                if (task.IsFaulted || task.IsCanceled)
-                    throw new RequestFailedException(0, "Firebase request has been failed!");
-            });
-
-            // setup data
-            var dataToSave = await OnQueryReceived(currentTask?.Result);
-
-
-            // add fetched data to storage
-            _localStorage.SaveCategory(dataToSave);
-
-            storageCategories = _localStorage.LoadCategory();
-
             return storageCategories;
         }
 
+
+        /// <summary>
+        /// Load list of categories from firestore online
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Category>> LoadCategoriesFromFirestore()
+        {
+            Task<QuerySnapshot> thisTask = null;
+
+            // get data from firebase and save it
+            await _categoryRepository.GetCategories().ContinueWith(task => { thisTask = task; });
+
+            var data = await OnQueryReceived(thisTask.Result);
+
+            _localStorage.SaveCategory(data);
+
+
+            return data;
+        }
+
+        public async Task<List<Category>> FetchCategoryList(LoadingController loadingController)
+        {
+            // first load by cache
+            if (LoadCategoriesFromCache() != null)
+                return LoadCategoriesFromCache();
+
+            // show loading page
+            loadingController.SetState(SplashScreenState.Loading);
+
+            // checking connection
+            bool isConnected = await ConnectionChecker.IsConnectedToNetwork();
+
+            // if connected, get data from firestore
+            if (isConnected)
+            {
+                var fetchedData = await LoadCategoriesFromFirestore();
+                //loadingController.SetState(SplashScreenState.Done);
+                return fetchedData;
+            }
+            else
+            {
+                loadingController.SetState(SplashScreenState.Failed);
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Convert received query snapshot to list of categories.
+        /// Create category class for each
+        /// </summary>
+        /// <param name="querySnapshot"></param>
+        /// <returns></returns>
         private async Task<List<Category>> OnQueryReceived(QuerySnapshot querySnapshot)
         {
             List<Category> _categories = new();
