@@ -17,6 +17,7 @@ namespace Categories.Utills
             else
             {
                 Instance = this;
+                DontDestroyOnLoad(gameObject);
             }
         }
 

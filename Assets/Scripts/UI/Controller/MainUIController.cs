@@ -1,3 +1,4 @@
+using System;
 using Categories.Utills;
 using UnityEngine;
 
@@ -14,6 +15,14 @@ namespace UI.Controller
         private void Awake()
         {
             _currentCategoryManager = CurrentCategoryManager.Instance;
+        }
+
+        private void Start()
+        {
+            if (_currentCategoryManager != null && _currentCategoryManager.CurrentCategory != null)
+            {
+                ShowSketchesPanel();
+            }
         }
 
         public void ShowSketchesPanel()
