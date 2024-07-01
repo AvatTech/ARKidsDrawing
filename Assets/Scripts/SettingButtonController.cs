@@ -17,9 +17,7 @@ public class SettingButtonController : MonoBehaviour
     private void OnSettingsButton()
     {
         
-        RecordingService.StartRecording();
-        
         // load settings panel
-        //settingsPanel.SetActive(true);
+        settingsPanel.SetActive(true);
     }
 }
