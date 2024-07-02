@@ -19,51 +19,51 @@ namespace UI.Controller
 
         private void Start()
         {
-            planeFinderBehaviour.OnAutomaticHitTest.AddListener(HandleAutomaticHitTest);
+            // planeFinderBehaviour.OnAutomaticHitTest.AddListener(HandleAutomaticHitTest);
 
-            waitingPanel.SetActive(true);
+            // waitingPanel.SetActive(true);
 
             _reviewManager.EnableARSessionCheck();
         }
 
 
-        private bool GroundPlaneHitReceived = false;
-        private long mAutomaticHitTestFrameCount;
+        // private bool GroundPlaneHitReceived = false;
+        // private long mAutomaticHitTestFrameCount;
 
         private void LateUpdate()
         {
-            GroundPlaneHitReceived = (mAutomaticHitTestFrameCount == Time.frameCount);
+            // GroundPlaneHitReceived = (mAutomaticHitTestFrameCount == Time.frameCount);
 
-            var targetStatus = VuforiaBehaviour.Instance.DevicePoseBehaviour.TargetStatus;
-            var isVisible = IsTrackedOrLimited(targetStatus) && GroundPlaneHitReceived;
+            // var targetStatus = VuforiaBehaviour.Instance.DevicePoseBehaviour.TargetStatus;
+            // var isVisible = IsTrackedOrLimited(targetStatus) && GroundPlaneHitReceived;
 
-            waitingPanel.SetActive(!isVisible);
+            // waitingPanel.SetActive(!isVisible);
         }
 
 
-        private static bool IsTrackedOrLimited(TargetStatus targetStatus)
-        {
-            return (targetStatus.Status == Status.TRACKED ||
-                    targetStatus.Status == Status.EXTENDED_TRACKED) &&
-                   targetStatus.StatusInfo == StatusInfo.NORMAL ||
-                   targetStatus.Status == Status.LIMITED && targetStatus.StatusInfo == StatusInfo.UNKNOWN;
-        }
+        // private static bool IsTrackedOrLimited(TargetStatus targetStatus)
+        // {
+        //     return (targetStatus.Status == Status.TRACKED ||
+        //             targetStatus.Status == Status.EXTENDED_TRACKED) &&
+        //            targetStatus.StatusInfo == StatusInfo.NORMAL ||
+        //            targetStatus.Status == Status.LIMITED && targetStatus.StatusInfo == StatusInfo.UNKNOWN;
+        // }
 
 
         /// <summary>
         /// Check whether the plane is ready or not?
         /// </summary>
         /// <param name="result"></param>
-        void HandleAutomaticHitTest(HitTestResult result)
-        {
-            mAutomaticHitTestFrameCount = Time.frameCount;
+        // void HandleAutomaticHitTest(HitTestResult result)
+        // {
+            // mAutomaticHitTestFrameCount = Time.frameCount;
 
             // // surface is ready!
             // if (result != null)
             //     waitingObject.SetActive(false);
             // else // surface is not ready!
             //     waitingObject.SetActive(true);
-        }
+        // }
 
         public void OnExitButton()
         {

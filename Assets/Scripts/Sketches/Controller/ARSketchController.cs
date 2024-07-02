@@ -2,14 +2,15 @@ using System;
 using Extensions.Unity.ImageLoader;
 using Sketches.Utills;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sketches.Controller
 {
     public class ARSketchController : MonoBehaviour
     {
-        private SpriteRenderer _spriteRenderer;
+        private RawImage _rawImage;
 
-        [SerializeField] private Transform parent;
+        [SerializeField] private RectTransform parent;
 
         [SerializeField] private float minScale;
         [SerializeField] private float maxScale;
@@ -20,7 +21,7 @@ namespace Sketches.Controller
 
         private void Awake()
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _rawImage = GetComponent<RawImage>();
         }
 
         private async void OnEnable()
@@ -29,7 +30,7 @@ namespace Sketches.Controller
             {
                 //_sketchController = CurrentSketchHolder.Instance.CurrentSketchUrl;
 
-                await ImageLoader.LoadSprite(CurrentSketchHolder.Instance.CurrentSketchUrl).ThenSet(_spriteRenderer);
+                await ImageLoader.LoadSprite(CurrentSketchHolder.Instance.CurrentSketchUrl).ThenSet(_rawImage);
             }
             catch (Exception e)
             {
@@ -40,16 +41,16 @@ namespace Sketches.Controller
 
         public void SetTransparency(float value)
         {
-            _spriteRenderer.color = new Color(1, 1, 1, value);
+            _rawImage.color = new Color(1, 1, 1, value);
         }
 
         public void SetRotation(float value)
         {
             // Calculate the rotation based on the input
-            var rotationY = value * 360f;
+            var rotationZ = value * 360f;
 
             // Apply the rotation to the GameObject
-            parent.rotation = Quaternion.Euler(0, rotationY, 0);
+            parent.rotation = Quaternion.Euler(0, 0, rotationZ);
         }
 
         public void SetScale(float value)

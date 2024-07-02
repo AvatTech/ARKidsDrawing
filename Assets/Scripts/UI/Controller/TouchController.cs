@@ -1,31 +1,39 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UI.Controller
 {
     public class TouchController : MonoBehaviour
     {
-        private RectTransform rectTransform;
-        private Vector2 prevTouchPos0, prevTouchPos1;
-        private bool isScaling;
-
-        // Minimum and maximum scale factors
+        [SerializeField] private UnityEngine.UI.Slider slider; 
         [SerializeField] private float minScaleFactor = 0.5f;
         [SerializeField] private float maxScaleFactor = 1.0f;
+        
+        private RectTransform _rectTransform;
+        private Vector2 _prevTouchPos0, _prevTouchPos1;
+        private bool _isScaling;
+
 
         private void Start()
         {
-            rectTransform = GetComponent<RectTransform>();
-            isScaling = false;
+            _rectTransform = GetComponent<RectTransform>();
+            _isScaling = false;
         }
 
         private void Update()
         {
+            if (IsPointerOverUIObject())
+            {
+                // If the touch is over the UI, do not move or scale the image
+                return;
+            }
+
             if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
                 // Move
                 var delta = Input.GetTouch(0).deltaPosition;
-                rectTransform.anchoredPosition += delta;
-                isScaling = false; // Reset scaling flag
+                _rectTransform.anchoredPosition += delta;
+                _isScaling = false; // Reset scaling flag
             }
             else if (Input.touchCount == 2)
             {
@@ -35,45 +43,55 @@ namespace UI.Controller
                 var touch0Pos = touch0.position;
                 var touch1Pos = touch1.position;
 
-                if (!isScaling)
+                if (!_isScaling)
                 {
                     // Initialize the previous touch positions when starting a new scale operation
-                    prevTouchPos0 = touch0Pos;
-                    prevTouchPos1 = touch1Pos;
-                    isScaling = true;
+                    _prevTouchPos0 = touch0Pos;
+                    _prevTouchPos1 = touch1Pos;
+                    _isScaling = true;
                 }
 
                 if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
                 {
                     // Scale
-                    var prevDistance = (prevTouchPos0 - prevTouchPos1).magnitude;
+                    var prevDistance = (_prevTouchPos0 - _prevTouchPos1).magnitude;
                     var currentDistance = (touch0Pos - touch1Pos).magnitude;
                     var scaleFactor = currentDistance / prevDistance;
 
                     // Calculate new scale
-                    var newScale = rectTransform.localScale * scaleFactor;
+                    var newScale = _rectTransform.localScale * scaleFactor;
 
                     // Clamp the scale
                     newScale.x = Mathf.Clamp(newScale.x, minScaleFactor, maxScaleFactor);
                     newScale.y = Mathf.Clamp(newScale.y, minScaleFactor, maxScaleFactor);
                     newScale.z = Mathf.Clamp(newScale.z, minScaleFactor, maxScaleFactor);
 
-                    rectTransform.localScale = newScale;
+                    _rectTransform.localScale = newScale;
 
                     // Rotation
-                    var angle = Vector2.SignedAngle(prevTouchPos1 - prevTouchPos0, touch1Pos - touch0Pos);
-                    rectTransform.Rotate(Vector3.forward, angle);
+                    var angle = Vector2.SignedAngle(_prevTouchPos1 - _prevTouchPos0, touch1Pos - touch0Pos);
+                    _rectTransform.Rotate(Vector3.forward, angle);
                 }
 
                 // Update previous touch positions
-                prevTouchPos0 = touch0Pos;
-                prevTouchPos1 = touch1Pos;
+                _prevTouchPos0 = touch0Pos;
+                _prevTouchPos1 = touch1Pos;
             }
             else
             {
                 // Reset scaling flag if no longer scaling
-                isScaling = false;
+                _isScaling = false;
             }
+        }
+
+        private bool IsPointerOverUIObject()
+        {
+            // Check if the touch is over the slider UI element
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.touchCount > 0 ? (Vector2)Input.GetTouch(0).position : Vector2.zero;
+            var results = new System.Collections.Generic.List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            return results.Count > 0 && results[0].gameObject == slider.gameObject;
         }
     }
 }

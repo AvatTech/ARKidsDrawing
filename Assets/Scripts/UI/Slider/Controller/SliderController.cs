@@ -1,10 +1,13 @@
 ﻿using System;
+using Sketches.Controller;
 using UnityEngine;
 
 namespace UI.Slider.Controller
 {
     public class SliderController : MonoBehaviour
     {
+        [SerializeField] private ARSketchController arSketchController;
+
         private UnityEngine.UI.Slider slider;
 
         public Action<float> onValueChanged;
@@ -26,9 +29,11 @@ namespace UI.Slider.Controller
             slider.value = Mathf.Clamp(value, 0f, 1f);
         }
 
-        public void OnSliderValueChanged(float value)
+        private void OnSliderValueChanged(float value)
         {
-            onValueChanged.Invoke(value);
+            // onValueChanged.Invoke(value);
+
+            arSketchController.SetTransparency(Mathf.Abs(1 - value));
         }
     }
 }
