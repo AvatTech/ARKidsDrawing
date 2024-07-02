@@ -1,10 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using VideoRecorder.Services;
 using VoxelBusters.ReplayKit;
 using Vuforia;
 using Zenject;
+using Image = UnityEngine.UI.Image;
 
 namespace UI.Controller
 {
@@ -14,6 +16,12 @@ namespace UI.Controller
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private GameObject waitingPanel;
         [SerializeField] private GameObject helpPanel;
+
+        [Space, SerializeField] private Image recordingButtonImage;
+        [SerializeField] private Sprite startRecordSprite;
+        [SerializeField] private Sprite stopRecordSprite;
+
+        [Space, SerializeField] private TimerController timerController;
 
         [Inject] private ReviewManager _reviewManager;
 
@@ -56,29 +64,33 @@ namespace UI.Controller
         /// <param name="result"></param>
         // void HandleAutomaticHitTest(HitTestResult result)
         // {
-            // mAutomaticHitTestFrameCount = Time.frameCount;
+        // mAutomaticHitTestFrameCount = Time.frameCount;
 
-            // // surface is ready!
-            // if (result != null)
-            //     waitingObject.SetActive(false);
-            // else // surface is not ready!
-            //     waitingObject.SetActive(true);
+        // // surface is ready!
+        // if (result != null)
+        //     waitingObject.SetActive(false);
+        // else // surface is not ready!
+        //     waitingObject.SetActive(true);
         // }
-
         public void OnExitButton()
         {
             SceneManager.LoadScene("MainMenu");
         }
 
-        public void OnHelpButton()
+        public void OnRecordButton()
         {
             if (ReplayKitManager.IsRecording())
+            {
                 ReplayKitManager.StopRecording();
+                recordingButtonImage.sprite = startRecordSprite;
+                timerController.StopTimer();
+            }
             else
+            {
                 RecordingService.StartRecording();
-
-
-            //helpPanel.SetActive(true);
+                recordingButtonImage.sprite = stopRecordSprite;
+                timerController.StartTimer();
+            }
         }
     }
 }

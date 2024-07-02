@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 3dfd5960a55c6064ab1a7ca9d7977a9e
   - enabled: 1
-    path: Assets/Scenes/AppScene.unity
+    path: Assets/Scenes/AppSceneWithRecording.unity
     guid: ad5fcba9a1c8ab64d86e2727dc918757
   m_configObjects: {}
