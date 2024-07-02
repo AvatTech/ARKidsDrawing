@@ -3,28 +3,40 @@ using UnityEngine.EventSystems;
 
 namespace UI.Controller
 {
-    public class TouchController : MonoBehaviour
+    public class TouchControls : MonoBehaviour
     {
-        [SerializeField] private UnityEngine.UI.Slider slider; 
+        [SerializeField] private UnityEngine.UI.Slider slider;
         [SerializeField] private float minScaleFactor = 0.5f;
         [SerializeField] private float maxScaleFactor = 1.0f;
-        
+
         private RectTransform _rectTransform;
         private Vector2 _prevTouchPos0, _prevTouchPos1;
         private bool _isScaling;
-
+        private bool _isInteractingWithSlider;
 
         private void Start()
         {
             _rectTransform = GetComponent<RectTransform>();
             _isScaling = false;
+            _isInteractingWithSlider = false;
+
+            // Add event triggers to detect when the slider interaction starts and ends
+            var sliderEventTrigger = slider.gameObject.AddComponent<EventTrigger>();
+
+            var pointerDownEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            pointerDownEntry.callback.AddListener((data) => { _isInteractingWithSlider = true; });
+            sliderEventTrigger.triggers.Add(pointerDownEntry);
+
+            var pointerUpEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
+            pointerUpEntry.callback.AddListener((data) => { _isInteractingWithSlider = false; });
+            sliderEventTrigger.triggers.Add(pointerUpEntry);
         }
 
         private void Update()
         {
-            if (IsPointerOverUIObject())
+            if (_isInteractingWithSlider)
             {
-                // If the touch is over the UI, do not move or scale the image
+                // If the user is interacting with the slider, do not move or scale the image
                 return;
             }
 
@@ -33,6 +45,7 @@ namespace UI.Controller
                 // Move
                 var delta = Input.GetTouch(0).deltaPosition;
                 _rectTransform.anchoredPosition += delta;
+                ClampPosition();
                 _isScaling = false; // Reset scaling flag
             }
             else if (Input.touchCount == 2)
@@ -67,6 +80,7 @@ namespace UI.Controller
                     newScale.z = Mathf.Clamp(newScale.z, minScaleFactor, maxScaleFactor);
 
                     _rectTransform.localScale = newScale;
+                    ClampPosition();
 
                     // Rotation
                     var angle = Vector2.SignedAngle(_prevTouchPos1 - _prevTouchPos0, touch1Pos - touch0Pos);
@@ -84,14 +98,43 @@ namespace UI.Controller
             }
         }
 
-        private bool IsPointerOverUIObject()
+        private void ClampPosition()
         {
-            // Check if the touch is over the slider UI element
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.touchCount > 0 ? (Vector2)Input.GetTouch(0).position : Vector2.zero;
-            var results = new System.Collections.Generic.List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-            return results.Count > 0 && results[0].gameObject == slider.gameObject;
+            var corners = new Vector3[4];
+            _rectTransform.GetWorldCorners(corners);
+
+            float screenLeft = 0;
+            float screenRight = Screen.width;
+            float screenBottom = 0;
+            float screenTop = Screen.height;
+
+            var imageWidth = corners[2].x - corners[0].x;
+            var imageHeight = corners[2].y - corners[0].y;
+
+            var halfImageWidth = imageWidth / 2;
+            var halfImageHeight = imageHeight / 2;
+
+            var clampedPosition = _rectTransform.anchoredPosition;
+
+            if (corners[0].x > screenRight - halfImageWidth)
+            {
+                clampedPosition.x -= corners[0].x - (screenRight - halfImageWidth);
+            }
+            else if (corners[2].x < screenLeft + halfImageWidth)
+            {
+                clampedPosition.x += (screenLeft + halfImageWidth) - corners[2].x;
+            }
+
+            if (corners[0].y > screenTop - halfImageHeight)
+            {
+                clampedPosition.y -= corners[0].y - (screenTop - halfImageHeight);
+            }
+            else if (corners[2].y < screenBottom + halfImageHeight)
+            {
+                clampedPosition.y += (screenBottom + halfImageHeight) - corners[2].y;
+            }
+
+            _rectTransform.anchoredPosition = clampedPosition;
         }
     }
 }
