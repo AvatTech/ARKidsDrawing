@@ -1,5 +1,6 @@
 ﻿using System;
 using Sketches.Model;
+using UnityEngine;
 
 namespace Sketches.Builder
 {
@@ -42,6 +43,14 @@ namespace Sketches.Builder
         public SketchBuilder SetImageUrl(string imageUrl)
         {
             _sketch.ImageUrl = imageUrl;
+            return this;
+        }
+
+        public SketchBuilder SetIsPremium(bool isPremium)
+        {
+            _sketch.IsPremium = isPremium;
+            if (isPremium)
+                Debug.Log("we find a premium!");
             return this;
         }
 
