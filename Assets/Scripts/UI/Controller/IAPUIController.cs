@@ -1,4 +1,3 @@
-using System;
 using Services;
 using UnityEngine;
 using Zenject;
@@ -7,18 +6,22 @@ namespace UI.Controller
 {
     public class IAPUIController : MonoBehaviour
     {
-        [SerializeField] private GameObject iapPanelPage;
+        [SerializeField] private GameObject paidPanelPage;
+        [SerializeField] private GameObject purchasePanelPage;
+        
         [Inject] private readonly IAPService _iapService;
 
         private void Start()
         {
-            _iapService.OnInitializeCompleted.AddListener(OnInitializePurchaseCompleted);
+            _iapService.OnInitializeCompleted.AddListener(OnInitializeCompleted);
+            _iapService.OnPurchaseCompleted.AddListener(OnPurchaseCompleted);
             _iapService.Initialize();
         }
 
         public void CloseButton()
         {
-            iapPanelPage.SetActive(false);
+            purchasePanelPage.SetActive(false);
+            paidPanelPage.SetActive(false);
         }
 
         public void PurchaseButton()
@@ -26,9 +29,17 @@ namespace UI.Controller
             _iapService.Purchase(ProductType.Weekly);
         }
 
-        private void OnInitializePurchaseCompleted()
+        private void OnInitializeCompleted()
         {
             Debug.Log("on initialize completed");
+            //todo: make ui (prices)
+        }
+        
+        private void OnPurchaseCompleted()
+        {
+            Debug.Log("on purchase completed");
+            paidPanelPage.SetActive(true);
+            purchasePanelPage.SetActive(false);
         }
     }
 }

@@ -1,15 +1,19 @@
 using Categories.Utills;
+using Repositories;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace UI.Controller
 {
     public class MainUIController : MonoBehaviour
     {
+        [Inject] private IAPRepository _iapRepository;
+        
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
         [SerializeField] private GameObject splashPagePanel;
         [SerializeField] private GameObject iapPagePanel;
+        [SerializeField] private GameObject iapPurchasedPagePanel;
 
         private CurrentCategoryManager _currentCategoryManager;
 
@@ -51,7 +55,17 @@ namespace UI.Controller
 
         public void ShowIAPPage()
         {
-            iapPagePanel.SetActive(true);
+            var result = _iapRepository.IsPurchased(false);
+            Debug.Log(result);
+            if (result)
+            {
+                
+                iapPagePanel.SetActive(true);   
+            }
+            else
+            {
+                iapPurchasedPagePanel.SetActive(true);
+            }
         }
     }
 }

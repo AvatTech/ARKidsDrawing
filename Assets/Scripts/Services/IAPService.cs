@@ -19,6 +19,7 @@ namespace Services
         private IExtensionProvider _extensionProvider;
 
         public UnityEvent OnInitializeCompleted { get; } = new();
+        public UnityEvent OnPurchaseCompleted { get; } = new();
 
         public void Initialize()
         {
@@ -116,6 +117,7 @@ namespace Services
         {
             Debug.Log("Premium Features Purchased.");
             _iapRepository.SetPurchase(true);
+            OnPurchaseCompleted.Invoke();
         }
 
         private void CheckForPremium()

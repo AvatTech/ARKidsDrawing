@@ -12,5 +12,11 @@ namespace Repositories
         {
             _bayegan.Store(IAPKey, isPurchased);
         }
+
+        public bool IsPurchased(bool defaultValue)
+        {
+            
+            return _bayegan.Load(IAPKey, defaultValue);
+        }
     }
 }
