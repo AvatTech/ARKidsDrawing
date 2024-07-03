@@ -1,6 +1,6 @@
-using System;
 using Categories.Utills;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UI.Controller
 {
@@ -9,6 +9,7 @@ namespace UI.Controller
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
         [SerializeField] private GameObject splashPagePanel;
+        [SerializeField] private GameObject iapPagePanel;
 
         private CurrentCategoryManager _currentCategoryManager;
 
@@ -46,6 +47,11 @@ namespace UI.Controller
             splashPagePanel.SetActive(true);
             categoryPanel.SetActive(false);
             mainPagePanel.SetActive(true);
+        }
+
+        public void ShowIAPPage()
+        {
+            iapPagePanel.SetActive(true);
         }
     }
 }
