@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
+using NSubstitute.Extensions;
 using Sketches.Controller;
 using Sketches.Model;
 using TMPro;
@@ -49,13 +50,12 @@ namespace UI.Controller
             //_sketches = await _fetchSketchesService.FetchSketchesById(_currentCategoryManager.CurrentCategory.Id);
 
             _sketches = new List<Sketch>(CurrentCategoryManager.Instance.CurrentCategory.Sketches);
-            await SetUpSketchItems(_sketches);
+            await InstantiateSketches(_sketches);
         }
 
 
-        private async Task SetUpSketchItems(List<Sketch> sketches)
+        private async Task InstantiateSketches(List<Sketch> sketches)
         {
-            Debug.Log("fetching sketches...");
 
             var index = 1;
             foreach (var sketch in sketches)
@@ -65,6 +65,7 @@ namespace UI.Controller
                 var controller = sketchObj.GetComponent<SketchController>();
                 controller.Sketch = sketch;
                 _currentSketchesObjects.Add(controller);
+                controller.ConfigurePremium();
                 await controller.SetImageFromUrl(sketch.ImageUrl);
             }
         }

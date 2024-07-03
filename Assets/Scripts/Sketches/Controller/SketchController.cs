@@ -3,6 +3,7 @@ using Sketches.Model;
 using Sketches.Utills;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using imageLoader = Extensions.Unity.ImageLoader.ImageLoader;
 
@@ -12,10 +13,13 @@ namespace Sketches.Controller
     {
         public Sketch Sketch { get; set; }
 
-
+        [SerializeField] private Image borderImage;
         private RawImage _rawImage;
         private Button _button;
         private bool _isDestroy;
+
+        [SerializeField] private Sprite premiumSprite;
+
 
         private void Start()
         {
@@ -27,24 +31,28 @@ namespace Sketches.Controller
             _isDestroy = true;
         }
 
-        private void Init()
-        {
-            _rawImage = GetComponentInChildren<RawImage>();
-            _button = GetComponentInChildren<Button>();
-
-            _button.onClick.AddListener(OnSketchClicked);
-
-            SetScale(0.5f);
-        }
-
-
         private void OnSketchClicked()
         {
             CurrentSketchHolder.Instance.CurrentSketchUrl = Sketch.ImageUrl;
 
+            if (Sketch.IsPremium)
+                // load in app purchase 
+                return;
+
             // Load next scene
             SceneManager.LoadScene("AppScene");
         }
+
+        private void Init()
+        {
+            _rawImage = GetComponentInChildren<RawImage>();
+            _button = GetComponentInChildren<Button>();
+            _button.onClick.AddListener(OnSketchClicked);
+
+            // set initial scale
+            SetScale(0.5f);
+        }
+
 
         public void SetScale(float value)
         {
@@ -80,6 +88,13 @@ namespace Sketches.Controller
             await imageLoader.LoadSprite(url).Then((sprite => { t = sprite.texture; }));
 
             return t;
+        }
+
+
+        public void ConfigurePremium()
+        {
+            if (Sketch.IsPremium)
+                borderImage.sprite = premiumSprite;
         }
     }
 }

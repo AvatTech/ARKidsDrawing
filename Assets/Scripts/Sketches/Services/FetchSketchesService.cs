@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase.Firestore;
 using Repositories;
@@ -22,12 +23,13 @@ namespace Sketches.Services
 
                 dic.TryGetValue("name", out var sketchName);
                 dic.TryGetValue("imageUrl", out var sketchImageUrl);
+                dic.TryGetValue("isPremium", out var isPremium);
 
                 Sketch sketch = SketchBuilder.Builder()
                     .SetName(sketchName?.ToString())
                     .SetImageUrl(sketchImageUrl?.ToString())
+                    .SetIsPremium((bool)isPremium!)
                     .Build();
-
 
                 sketches.Add(sketch);
             }
