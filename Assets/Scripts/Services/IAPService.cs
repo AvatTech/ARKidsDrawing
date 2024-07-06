@@ -1,3 +1,4 @@
+using System;
 using Repositories;
 using Unity.Services.Core;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Services
         private IStoreController _storeController;
         private IExtensionProvider _extensionProvider;
 
-        public UnityEvent OnInitializeCompleted { get; } = new();
+        public UnityEvent<string, string, string, string> OnInitializeCompleted { get; } = new();
         public UnityEvent OnPurchaseCompleted { get; } = new();
 
         public void Initialize()
@@ -87,7 +88,16 @@ namespace Services
         {
             _storeController = controller;
             _extensionProvider = extensions;
-            OnInitializeCompleted.Invoke();
+            var weeklyProduct = _storeController.products.WithID(Constants.WeeklySubscriptionID);
+            var monthlyProduct = _storeController.products.WithID(Constants.MonthlySubscriptionID);
+            Debug.Log(
+                $"{weeklyProduct.metadata.localizedTitle} {weeklyProduct.metadata.localizedPriceString} {monthlyProduct.metadata.localizedTitle} {monthlyProduct.metadata.localizedPriceString}");
+            OnInitializeCompleted.Invoke(
+                weeklyProduct.metadata.localizedTitle,
+                weeklyProduct.metadata.localizedPriceString,
+                monthlyProduct.metadata.localizedTitle,
+                monthlyProduct.metadata.localizedPriceString
+            );
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)
@@ -115,27 +125,60 @@ namespace Services
         private void UnlockPremiumFeatures(Product product)
         {
             Debug.Log("Premium Features Purchased.");
-            _iapRepository.SaveSubscriptionExpiryDate(product);
-            OnPurchaseCompleted.Invoke();
+            // create a SubscriptionManager object using the subscription Product object
+            var result = CheckSubscriptionStatus(product);
+
+            if (result.HasValue)
+            {
+                _iapRepository.SaveSubscriptionExpiryDate(result.Value);
+                OnPurchaseCompleted.Invoke();
+            }
+        }
+
+        private DateTime? CheckSubscriptionStatus(Product product)
+        {
+            var subscriptionManager = new SubscriptionManager(product, null);
+            var subscriptionInfo = subscriptionManager.getSubscriptionInfo();
+            // check if the subscription is active
+            if (subscriptionInfo.isSubscribed() == Result.True)
+            {
+                Debug.Log("Subscription expiration date: " + subscriptionInfo.getExpireDate());
+                return subscriptionInfo.getExpireDate();
+            }
+
+            return null;
         }
 
         public bool Restore()
         {
-            Debug.Log(_storeController);
             var product = _storeController.products.WithID(Constants.WeeklySubscriptionID);
             Debug.Log(product);
-            if (product != null &&  product.hasReceipt)
+            if (product != null && product.hasReceipt)
             {
-                _iapRepository.SaveSubscriptionExpiryDate(product);
-                return true;
+                var result = CheckSubscriptionStatus(product);
+                if (result.HasValue)
+                {
+                    _iapRepository.SaveSubscriptionExpiryDate(result.Value);
+                    OnPurchaseCompleted.Invoke();
+                    return true;
+                }
+
+                return false;
             }
 
             product = _storeController.products.WithID(Constants.MonthlySubscriptionID);
             Debug.Log(product);
             if (product != null && product.hasReceipt)
             {
-                _iapRepository.SaveSubscriptionExpiryDate(product);
-                return true;
+                var result = CheckSubscriptionStatus(product);
+                if (result.HasValue)
+                {
+                    _iapRepository.SaveSubscriptionExpiryDate(result.Value);
+                    OnPurchaseCompleted.Invoke();
+                    return true;
+                }
+
+                return false;
             }
 
             return false;

@@ -1,5 +1,6 @@
 using Categories.Utills;
 using Repositories;
+using Services;
 using UnityEngine;
 using Zenject;
 
@@ -8,7 +9,8 @@ namespace UI.Controller
     public class MainUIController : MonoBehaviour
     {
         [Inject] private IAPRepository _iapRepository;
-        
+        [Inject] private IAPService _iapService;
+
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
         [SerializeField] private GameObject splashPagePanel;
@@ -20,18 +22,32 @@ namespace UI.Controller
 
         private void Awake()
         {
-            _currentCategoryManager = CurrentCategoryManager.Instance;
-            iapBanner.SetActive(false);
+            Init();
         }
 
-        private void Start()
+        private void Init()
         {
+            InitComponents();
+            InitCommands();
+        }
+
+        private void InitComponents()
+        {
+            _currentCategoryManager = CurrentCategoryManager.Instance;
+            iapBanner.SetActive(false);
+
             if (_currentCategoryManager != null && _currentCategoryManager.CurrentCategory != null)
             {
                 ShowSketchesPanel();
             }
 
-            CheckForPremium();
+            CheckForPremium(string.Empty, string.Empty, string.Empty, string.Empty);
+        }
+
+        private void InitCommands()
+        {
+            _iapService.OnInitializeCompleted.AddListener(CheckForPremium);
+            _iapService.Initialize();
         }
 
         public void ShowSketchesPanel()
@@ -63,8 +79,7 @@ namespace UI.Controller
             Debug.Log(result);
             if (result)
             {
-                
-                iapPagePanel.SetActive(true);   
+                iapPagePanel.SetActive(true);
             }
             else
             {
@@ -72,7 +87,7 @@ namespace UI.Controller
             }
         }
 
-        private void CheckForPremium()
+        private void CheckForPremium(string arg0, string s, string s1, string arg3)
         {
             var result = _iapRepository.IsPurchased();
             if (result)
@@ -83,7 +98,6 @@ namespace UI.Controller
             {
                 iapBanner.SetActive(true);
             }
-                
         }
     }
 }

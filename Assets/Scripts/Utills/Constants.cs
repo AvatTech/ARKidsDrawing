@@ -4,7 +4,7 @@
     {
         public const string KeyCategories = "KEY_CATEGORIES";
         public const string KeyFirstLaunch = "FIRST_LAUNCH";
-        public const string WeeklySubscriptionID = "premium_feature";
-        public const string MonthlySubscriptionID = "monthlyid";
+        public const string WeeklySubscriptionID = "weekly_premium";
+        public const string MonthlySubscriptionID = "monthly_premium";
     }
 }

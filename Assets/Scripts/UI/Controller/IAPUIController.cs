@@ -1,4 +1,5 @@
 using Services;
+using UI.Toggle;
 using UnityEngine;
 using Zenject;
 
@@ -12,6 +13,12 @@ namespace UI.Controller
         [SerializeField] private UnityEngine.UI.Button privacyPolicyButton;
         [SerializeField] private UnityEngine.UI.Button termsConditionButton;
         [SerializeField] private UnityEngine.UI.Button restoreButton;
+        [SerializeField] private IAPToggleController iapToggleController;
+
+        [Space, Header("Toggles")] [SerializeField]
+        private CustomToggle weeklyToggle;
+
+        [SerializeField] private CustomToggle monthlyToggle;
 
         [Inject] private readonly IAPService _iapService;
 
@@ -58,21 +65,43 @@ namespace UI.Controller
 
         public void PurchaseButton()
         {
-            _iapService.Purchase(ProductType.SubscriptionWeekly);
+            if (weeklyToggle.IsSelected)
+            {
+                _iapService.Purchase(ProductType.SubscriptionWeekly);
+                return;
+            }
+
+            if (monthlyToggle.IsSelected)
+            {
+                _iapService.Purchase(ProductType.SubscriptionMonthly);
+                return;
+            }
         }
 
-        private void OnInitializeCompleted()
+        private void OnInitializeCompleted(string weeklyTitle, string weeklyPrice, string monthlyTitle,
+            string monthlyPrice)
         {
             Debug.Log("on initialize completed");
-            //todo: make ui (prices)
+
+            Debug.Log($"{weeklyTitle} {weeklyPrice} {monthlyTitle} {monthlyPrice}");
+
             if (purchaseButton != null)
             {
                 purchaseButton.enabled = true;
             }
-            
+
             if (restoreButton != null)
             {
                 restoreButton.enabled = true;
+            }
+
+            if (iapToggleController != null)
+            {
+                iapToggleController.UpdateText(
+                    weeklyTitle,
+                    weeklyPrice,
+                    monthlyTitle,
+                    monthlyPrice);
             }
         }
 
@@ -81,6 +110,11 @@ namespace UI.Controller
             Debug.Log("on purchase completed");
             paidPanelPage.SetActive(true);
             purchasePanelPage.SetActive(false);
+
+            if (restoreButton != null)
+            {
+                restoreButton.enabled = false;
+            }
         }
 
         private void OnPrivacyClicked()
