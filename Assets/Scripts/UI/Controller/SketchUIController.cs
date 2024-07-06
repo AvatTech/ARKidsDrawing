@@ -3,20 +3,28 @@ using System.Threading.Tasks;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
 using NSubstitute.Extensions;
+using Repositories;
 using Sketches.Controller;
 using Sketches.Model;
+using Sketches.Utills;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.Controller
 {
     public class SketchUIController : MonoBehaviour
     {
+        [Inject] private readonly IAPRepository _iapRepository;
+
         [SerializeField] private GameObject sketchPrefab;
         [SerializeField] private GameObject sketchParentObject;
         [SerializeField] private RawImage categoryIcon;
         [SerializeField] private TextMeshProUGUI categoryTitleText;
+
+        [Space, SerializeField] private GameObject purchasePanel;
 
         private readonly List<SketchController> _currentSketchesObjects = new();
 
@@ -56,7 +64,6 @@ namespace UI.Controller
 
         private async Task InstantiateSketches(List<Sketch> sketches)
         {
-
             var index = 1;
             foreach (var sketch in sketches)
             {
@@ -64,8 +71,24 @@ namespace UI.Controller
                 sketchObj.name = $"{index++}";
                 var controller = sketchObj.GetComponent<SketchController>();
                 controller.Sketch = sketch;
+
+                if (sketch.IsPremium && !_iapRepository.IsPurchased(false))
+                {
+                    controller.ConfigurePremium();
+                    
+                    controller.AddOnSketchClickedListener(() =>
+                    {
+                        // iap purchase opens
+                        purchasePanel.SetActive(true);
+                    });
+                }
+                else
+                {
+                    CurrentSketchHolder.Instance.CurrentSketchUrl = sketch.ImageUrl;
+                    controller.AddOnSketchClickedListener(() => { SceneManager.LoadScene("AppScene"); });
+                }
+
                 _currentSketchesObjects.Add(controller);
-                controller.ConfigurePremium();
                 await controller.SetImageFromUrl(sketch.ImageUrl);
             }
         }

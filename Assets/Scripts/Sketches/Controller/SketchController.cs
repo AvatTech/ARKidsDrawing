@@ -1,10 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Repositories;
 using Sketches.Model;
 using Sketches.Utills;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Zenject;
 using imageLoader = Extensions.Unity.ImageLoader.ImageLoader;
 
 namespace Sketches.Controller
@@ -18,6 +23,7 @@ namespace Sketches.Controller
         private Button _button;
         private bool _isDestroy;
 
+        
         [SerializeField] private Sprite premiumSprite;
 
 
@@ -35,18 +41,14 @@ namespace Sketches.Controller
         {
             CurrentSketchHolder.Instance.CurrentSketchUrl = Sketch.ImageUrl;
 
-            if (Sketch.IsPremium)
-                // load in app purchase 
-                return;
-
             // Load next scene
-            SceneManager.LoadScene("AppScene");
+            //SceneManager.LoadScene("AppScene");
         }
 
         private void Init()
         {
             _rawImage = GetComponentInChildren<RawImage>();
-            _button = GetComponentInChildren<Button>();
+            _button = GetComponent<Button>();
             _button.onClick.AddListener(OnSketchClicked);
 
             // set initial scale
@@ -94,7 +96,27 @@ namespace Sketches.Controller
         public void ConfigurePremium()
         {
             if (Sketch.IsPremium)
+            {
                 borderImage.sprite = premiumSprite;
+            }
         }
+
+        public void AddOnSketchClickedListener(UnityAction onSketchClicked)
+        {
+            if (_button is null)
+                _button = GetComponent<Button>();
+            
+            _button.onClick.AddListener(onSketchClicked);
+        }
+        
+        public void RemoveAllListeners()
+        {
+            if (_button is null)
+                _button = GetComponent<Button>();
+            
+            _button.onClick.RemoveAllListeners();
+        }
+        
+        
     }
 }

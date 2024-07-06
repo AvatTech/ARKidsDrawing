@@ -1,4 +1,3 @@
-using Extensions.Unity.ImageLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
