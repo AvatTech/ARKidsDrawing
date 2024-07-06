@@ -72,7 +72,7 @@ namespace UI.Controller
                 var controller = sketchObj.GetComponent<SketchController>();
                 controller.Sketch = sketch;
 
-                if (sketch.IsPremium && !_iapRepository.IsPurchased(false))
+                if (sketch.IsPremium && !_iapRepository.IsPurchased())
                 {
                     controller.ConfigurePremium();
                     

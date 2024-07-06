@@ -14,12 +14,14 @@ namespace UI.Controller
         [SerializeField] private GameObject splashPagePanel;
         [SerializeField] private GameObject iapPagePanel;
         [SerializeField] private GameObject iapPurchasedPagePanel;
+        [SerializeField] private GameObject iapBanner;
 
         private CurrentCategoryManager _currentCategoryManager;
 
         private void Awake()
         {
             _currentCategoryManager = CurrentCategoryManager.Instance;
+            iapBanner.SetActive(false);
         }
 
         private void Start()
@@ -28,6 +30,8 @@ namespace UI.Controller
             {
                 ShowSketchesPanel();
             }
+
+            CheckForPremium();
         }
 
         public void ShowSketchesPanel()
@@ -55,7 +59,7 @@ namespace UI.Controller
 
         public void ShowIAPPage()
         {
-            var result = _iapRepository.IsPurchased(false);
+            var result = _iapRepository.IsPurchased();
             Debug.Log(result);
             if (result)
             {
@@ -66,6 +70,20 @@ namespace UI.Controller
             {
                 iapPurchasedPagePanel.SetActive(true);
             }
+        }
+
+        private void CheckForPremium()
+        {
+            var result = _iapRepository.IsPurchased();
+            if (result)
+            {
+                iapBanner.SetActive(false);
+            }
+            else
+            {
+                iapBanner.SetActive(true);
+            }
+                
         }
     }
 }

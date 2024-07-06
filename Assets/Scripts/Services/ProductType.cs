@@ -2,7 +2,7 @@ namespace Services
 {
     public enum ProductType
     {
-        Weekly = 0,
-        Monthly = 10
+        SubscriptionWeekly = 0,
+        SubscriptionMonthly = 10
     }
 }

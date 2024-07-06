@@ -3,6 +3,7 @@ using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Purchasing;
+using Utills;
 using Zenject;
 
 namespace Services
@@ -10,10 +11,8 @@ namespace Services
     public class IAPService : IStoreListener
     {
         [Inject] private readonly IAPRepository _iapRepository;
-        
+
         private const string AssetPath = "IAPProductCatalog";
-        private const string WeeklyID = "premium_feature";
-        private const string MonthlyID = "premium_feature";
 
         private IStoreController _storeController;
         private IExtensionProvider _extensionProvider;
@@ -28,13 +27,13 @@ namespace Services
 
         public void Purchase(ProductType type)
         {
-            if (type == ProductType.Weekly)
+            if (type == ProductType.SubscriptionWeekly)
             {
-                _storeController.InitiatePurchase(_storeController.products.WithID(WeeklyID));
+                _storeController.InitiatePurchase(_storeController.products.WithID(Constants.WeeklySubscriptionID));
             }
-            else if (type == ProductType.Monthly)
+            else if (type == ProductType.SubscriptionMonthly)
             {
-                _storeController.InitiatePurchase(_storeController.products.WithID(MonthlyID));
+                _storeController.InitiatePurchase(_storeController.products.WithID(Constants.MonthlySubscriptionID));
             }
         }
 
@@ -104,7 +103,7 @@ namespace Services
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
             Debug.Log($"Purchase Successful {purchaseEvent.purchasedProduct.definition.id}");
-            UnlockPremiumFeatures();
+            UnlockPremiumFeatures(purchaseEvent.purchasedProduct);
             return PurchaseProcessingResult.Complete;
         }
 
@@ -113,16 +112,11 @@ namespace Services
             Debug.Log($"Purchase Failed: product id:{product.definition.id} because {failureReason}");
         }
 
-        private void UnlockPremiumFeatures()
+        private void UnlockPremiumFeatures(Product product)
         {
             Debug.Log("Premium Features Purchased.");
-            _iapRepository.SetPurchase(true);
+            _iapRepository.SaveSubscriptionExpiryDate(product);
             OnPurchaseCompleted.Invoke();
-        }
-
-        private void CheckForPremium()
-        {
-            
         }
     }
 }

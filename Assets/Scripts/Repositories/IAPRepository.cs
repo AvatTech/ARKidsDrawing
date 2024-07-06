@@ -1,5 +1,9 @@
+using System;
 using Bayegan.Builder;
 using Bayegan.Storage.Abstractions;
+using UnityEngine;
+using UnityEngine.Purchasing;
+using Utills;
 
 namespace Repositories
 {
@@ -8,15 +12,43 @@ namespace Repositories
         private const string IAPKey = "IAPKey";
         private readonly IBayeganDictionary _bayegan = new BayeganDictionaryBuilder().Build();
 
-        public void SetPurchase(bool isPurchased)
+        // public void SetPurchase(bool isPurchased)
+        // {
+        //     _bayegan.Store(IAPKey, isPurchased);
+        // }
+
+        public bool IsPurchased()
         {
-            _bayegan.Store(IAPKey, isPurchased);
+            var expiryDateStr = _bayegan.Load<string>(IAPKey, "");
+            Debug.Log(expiryDateStr);
+            if (string.IsNullOrEmpty(expiryDateStr))
+            {
+                return false;
+            }
+
+            var expiryDate = DateTime.Parse(expiryDateStr);
+            return DateTime.Now <= expiryDate;
         }
 
-        public bool IsPurchased(bool defaultValue)
+        public void SaveSubscriptionExpiryDate(Product product)
         {
-            
-            return _bayegan.Load(IAPKey, defaultValue);
+            var purchaseDate = DateTime.Now;
+            DateTime expiryDate;
+
+            if (product.definition.id == Constants.WeeklySubscriptionID)
+            {
+                expiryDate = purchaseDate.AddDays(7);
+            }
+            else if (product.definition.id == Constants.MonthlySubscriptionID)
+            {
+                expiryDate = purchaseDate.AddMonths(1);
+            }
+            else
+            {
+                return;
+            }
+
+            _bayegan.Store(IAPKey, expiryDate.ToString());
         }
     }
 }

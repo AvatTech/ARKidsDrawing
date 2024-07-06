@@ -71,7 +71,7 @@ namespace Storage
         {
             var jsonData = JsonConvert.SerializeObject(categories);
             //string jsonData = 
-            PlayerPrefs.SetString(Constants.KEY_CATEGORIES, jsonData);
+            PlayerPrefs.SetString(Constants.KeyCategories, jsonData);
             PlayerPrefs.Save();
 
             Debug.Log(jsonData);
@@ -79,9 +79,9 @@ namespace Storage
 
         public List<Category> LoadCategory()
         {
-            if (PlayerPrefs.HasKey(Constants.KEY_CATEGORIES))
+            if (PlayerPrefs.HasKey(Constants.KeyCategories))
             {
-                string jsonData = PlayerPrefs.GetString(Constants.KEY_CATEGORIES);
+                string jsonData = PlayerPrefs.GetString(Constants.KeyCategories);
                 return JsonConvert.DeserializeObject<List<Category>>(jsonData);
             }
 

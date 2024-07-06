@@ -8,6 +8,7 @@ namespace UI.Controller
     {
         [SerializeField] private GameObject paidPanelPage;
         [SerializeField] private GameObject purchasePanelPage;
+        [SerializeField] private UnityEngine.UI.Button purchaseButton;
         [SerializeField] private UnityEngine.UI.Button privacyPolicyButton;
         [SerializeField] private UnityEngine.UI.Button termsConditionButton;
         [SerializeField] private UnityEngine.UI.Button retireButton;
@@ -24,7 +25,16 @@ namespace UI.Controller
 
         private void Init()
         {
+            InitComponents();
             InitCommands();
+        }
+
+        private void InitComponents()
+        {
+            if (purchaseButton != null)
+            {
+                purchaseButton.enabled = false;
+            }
         }
 
         private void InitCommands()
@@ -41,13 +51,17 @@ namespace UI.Controller
 
         public void PurchaseButton()
         {
-            _iapService.Purchase(ProductType.Weekly);
+            _iapService.Purchase(ProductType.SubscriptionWeekly);
         }
 
         private void OnInitializeCompleted()
         {
             Debug.Log("on initialize completed");
             //todo: make ui (prices)
+            if (purchaseButton != null)
+            {
+                purchaseButton.enabled = true;
+            }
         }
         
         private void OnPurchaseCompleted()

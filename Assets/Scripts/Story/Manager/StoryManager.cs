@@ -44,13 +44,13 @@ namespace Story.Manager
 
 
             // get the number saved in player pref
-            if (_localStorage.TryLoadInt(Constants.KEY_FIRST_LAUNCH, out int value))
+            if (_localStorage.TryLoadInt(Constants.KeyFirstLaunch, out int value))
             {
                 if (value == 0)
                 {
                     SortStories();
                     ShowStory(0);
-                    _localStorage.SaveInt(Constants.KEY_FIRST_LAUNCH, 1);
+                    _localStorage.SaveInt(Constants.KeyFirstLaunch, 1);
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Story.Manager
             {
                 SortStories();
                 ShowStory(0);
-                _localStorage.SaveInt(Constants.KEY_FIRST_LAUNCH, 1);
+                _localStorage.SaveInt(Constants.KeyFirstLaunch, 1);
             }
         }
         

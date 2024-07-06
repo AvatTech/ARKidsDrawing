@@ -9,7 +9,7 @@ namespace Sketches.Services
     {
         public ImageLoaderService()
         {
-            Debug.Log("ImageLoader service Instantiated!");
+            // Debug.Log("ImageLoader service Instantiated!");
         }
 
         public async Task<Texture2D> TryGetTexture(string url, Action<Exception> onFailed)

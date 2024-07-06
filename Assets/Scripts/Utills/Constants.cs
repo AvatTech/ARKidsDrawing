@@ -2,7 +2,9 @@
 {
     public static class Constants
     {
-        public const string KEY_CATEGORIES = "KEY_CATEGORIES";
-        public const string KEY_FIRST_LAUNCH = "FIRST_LAUNCH";
+        public const string KeyCategories = "KEY_CATEGORIES";
+        public const string KeyFirstLaunch = "FIRST_LAUNCH";
+        public const string WeeklySubscriptionID = "premium_feature";
+        public const string MonthlySubscriptionID = "monthlyid";
     }
 }
