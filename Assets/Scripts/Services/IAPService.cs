@@ -118,5 +118,27 @@ namespace Services
             _iapRepository.SaveSubscriptionExpiryDate(product);
             OnPurchaseCompleted.Invoke();
         }
+
+        public bool Restore()
+        {
+            Debug.Log(_storeController);
+            var product = _storeController.products.WithID(Constants.WeeklySubscriptionID);
+            Debug.Log(product);
+            if (product != null &&  product.hasReceipt)
+            {
+                _iapRepository.SaveSubscriptionExpiryDate(product);
+                return true;
+            }
+
+            product = _storeController.products.WithID(Constants.MonthlySubscriptionID);
+            Debug.Log(product);
+            if (product != null && product.hasReceipt)
+            {
+                _iapRepository.SaveSubscriptionExpiryDate(product);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
