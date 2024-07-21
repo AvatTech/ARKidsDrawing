@@ -52,7 +52,7 @@ namespace UI.Controller
 
         public void ShowSketchesPanel()
         {
-            mainPagePanel.SetActive(false);
+            // mainPagePanel.SetActive(false);
             categoryPanel.SetActive(true);
         }
 

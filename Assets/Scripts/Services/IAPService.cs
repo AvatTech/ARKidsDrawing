@@ -124,15 +124,19 @@ namespace Services
 
         private void UnlockPremiumFeatures(Product product)
         {
-            Debug.Log("Premium Features Purchased.");
+            Debug.Log($"{product.metadata.localizedTitle} Purchased.");
             // create a SubscriptionManager object using the subscription Product object
-            var result = CheckSubscriptionStatus(product);
 
+            var result = CheckSubscriptionStatus(product);
+            
             if (result.HasValue)
             {
                 _iapRepository.SaveSubscriptionExpiryDate(result.Value);
                 OnPurchaseCompleted.Invoke();
             }
+
+            // _iapRepository.SaveSubscriptionExpiryDate(DateTime.Now.AddMonths(1));
+            // OnPurchaseCompleted.Invoke();
         }
 
         private DateTime? CheckSubscriptionStatus(Product product)

@@ -1,3 +1,4 @@
+using System;
 using Story.Manager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,6 @@ namespace Story.Controller
         [Space, SerializeField] private Button nextButton;
         [Inject] private readonly StoryManager _storyManager;
 
-
         private void Awake()
         {
             _storyManager.storyPanelControllers.Add(this);
@@ -22,6 +22,7 @@ namespace Story.Controller
 
         private void Init()
         {
+            
             if (!isStoryPanel)
                 return;
 

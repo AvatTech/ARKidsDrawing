@@ -63,6 +63,7 @@ namespace Storage
         {
             PlayerPrefs.SetInt(key, value);
             PlayerPrefs.Save();
+            Debug.Log($"Saveeeeeed {key}");
         }
 
 

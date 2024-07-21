@@ -35,9 +35,9 @@ namespace UI.Controller
 
         private async void Start()
         {
-            var storyPanel = GetComponent<StoryPanelController>();
-            _storyManager.storyPanelControllers.Add(storyPanel);
-
+            // var storyPanel = GetComponent<StoryPanelController>();
+            // _storyManager.storyPanelControllers.Add(storyPanel);
+            
             tryAgainButton.onClick.AddListener(OnTryAgainClicked);
             await SyncCategories();
         }
