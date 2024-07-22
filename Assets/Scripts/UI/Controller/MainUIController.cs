@@ -1,7 +1,9 @@
+using System;
 using Categories.Utills;
 using Repositories;
 using Services;
 using UnityEngine;
+using Utills;
 using Zenject;
 
 namespace UI.Controller
@@ -48,6 +50,11 @@ namespace UI.Controller
         {
             _iapService.OnInitializeCompleted.AddListener(CheckForPremium);
             _iapService.Initialize();
+        }
+
+        private void OnDestroy()
+        {
+            PlayerPrefs.DeleteKey(Constants.KeyIsComingFromAR);
         }
 
         public void ShowSketchesPanel()

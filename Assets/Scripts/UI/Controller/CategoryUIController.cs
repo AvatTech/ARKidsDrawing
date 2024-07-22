@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AvatAdmobExtension.Script.Manager;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
@@ -37,11 +39,16 @@ namespace UI.Controller
         {
             // var storyPanel = GetComponent<StoryPanelController>();
             // _storyManager.storyPanelControllers.Add(storyPanel);
-            
+
             tryAgainButton.onClick.AddListener(OnTryAgainClicked);
             await SyncCategories();
         }
 
+
+        private void OnEnable()
+        {
+            StartCoroutine(AdManager.Instance.BannerAd.LoadThenShow());
+        }
 
         public async void OnTryAgainClicked()
         {

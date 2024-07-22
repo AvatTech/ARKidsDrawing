@@ -1,7 +1,9 @@
+using AvatAdmobExtension.Script.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Utills;
 using VideoRecorder.Services;
 using VoxelBusters.ReplayKit;
 using Vuforia;
@@ -27,11 +29,15 @@ namespace UI.Controller
 
         private void Start()
         {
+            PlayerPrefs.SetString(Constants.KeyIsComingFromAR, "YES");
+
             // planeFinderBehaviour.OnAutomaticHitTest.AddListener(HandleAutomaticHitTest);
 
             // waitingPanel.SetActive(true);
 
             _reviewManager.EnableARSessionCheck();
+
+            PlayerPrefs.SetString(Constants.KeyIsComingFromAR, "YES");
         }
 
 

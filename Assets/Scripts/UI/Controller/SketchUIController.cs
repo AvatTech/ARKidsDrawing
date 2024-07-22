@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AvatAdmobExtension.Script.Manager;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
 using NSubstitute.Extensions;
@@ -11,6 +13,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utills;
 using Zenject;
 
 namespace UI.Controller
@@ -40,6 +43,13 @@ namespace UI.Controller
                 return;
             }
 
+            if (PlayerPrefs.HasKey(Constants.KeyIsComingFromAR))
+            {
+                AdManager.Instance.InterstitialAd.LoadAd();
+                StartCoroutine(StartShowingAd());
+            }
+
+
             await ImageLoader.LoadSprite(CurrentCategoryManager.Instance.CurrentCategory.CoverImageUrl)
                 .ThenSet(categoryIcon);
             categoryTitleText.text = CurrentCategoryManager.Instance.CurrentCategory.Name;
@@ -51,6 +61,13 @@ namespace UI.Controller
         private void OnDisable()
         {
             RemoveSketches();
+        }
+
+        private IEnumerator StartShowingAd()
+        {
+            yield return new WaitUntil(() => AdManager.Instance.InterstitialAd.IsAdReady());
+
+            AdManager.Instance.InterstitialAd.ShowAd();
         }
 
         private async Task FetchSketches()
@@ -75,7 +92,7 @@ namespace UI.Controller
                 if (sketch.IsPremium && !_iapRepository.IsPurchased())
                 {
                     controller.ConfigurePremium();
-                    
+
                     controller.AddOnSketchClickedListener(() =>
                     {
                         // iap purchase opens
