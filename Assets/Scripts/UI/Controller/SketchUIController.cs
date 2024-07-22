@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AvatAdmobExtension.Script.Manager;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
+using Firebase.RemoteConfig;
 using NSubstitute.Extensions;
 using Repositories;
 using Sketches.Controller;
@@ -21,6 +22,7 @@ namespace UI.Controller
     public class SketchUIController : MonoBehaviour
     {
         [Inject] private readonly IAPRepository _iapRepository;
+        [Inject] private readonly RemoteConfig _remoteConfig;
 
         [SerializeField] private GameObject sketchPrefab;
         [SerializeField] private GameObject sketchParentObject;
@@ -36,6 +38,7 @@ namespace UI.Controller
 
         private async void OnEnable()
         {
+            
             if (CurrentCategoryManager.Instance.CurrentCategory == null)
             {
                 categoryIcon.texture = null;
@@ -45,6 +48,7 @@ namespace UI.Controller
 
             if (PlayerPrefs.HasKey(Constants.KeyIsComingFromAR))
             {
+                _remoteConfig.OnDataFetched.AddListener(DataFetched);
                 AdManager.Instance.InterstitialAd.LoadAd();
                 StartCoroutine(StartShowingAd());
             }
@@ -120,6 +124,11 @@ namespace UI.Controller
 
             _sketches.Clear();
             _currentSketchesObjects.Clear();
+        }
+        
+        private void DataFetched(bool native, bool banner, bool interstitial)
+        {
+            
         }
     }
 }
