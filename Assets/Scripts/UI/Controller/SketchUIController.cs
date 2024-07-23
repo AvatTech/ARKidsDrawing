@@ -38,7 +38,6 @@ namespace UI.Controller
 
         private async void OnEnable()
         {
-            
             if (CurrentCategoryManager.Instance.CurrentCategory == null)
             {
                 categoryIcon.texture = null;
@@ -49,8 +48,7 @@ namespace UI.Controller
             if (PlayerPrefs.HasKey(Constants.KeyIsComingFromAR))
             {
                 _remoteConfig.OnDataFetched.AddListener(DataFetched);
-                AdManager.Instance.InterstitialAd.LoadAd();
-                StartCoroutine(StartShowingAd());
+                _remoteConfig.FetchDataAsync();
             }
 
 
@@ -125,10 +123,19 @@ namespace UI.Controller
             _sketches.Clear();
             _currentSketchesObjects.Clear();
         }
-        
+
         private void DataFetched(bool native, bool banner, bool interstitial)
         {
+            AdManager.Instance.CanNativeAdShow = native;
+            AdManager.Instance.CanBannerAdShow = banner;
+            AdManager.Instance.CanInterstitialAdShow = interstitial;
             
+            
+            if (AdManager.Instance.CanInterstitialAdShow)
+            {
+                AdManager.Instance.InterstitialAd.LoadAd();
+                StartCoroutine(StartShowingAd());
+            }
         }
     }
 }

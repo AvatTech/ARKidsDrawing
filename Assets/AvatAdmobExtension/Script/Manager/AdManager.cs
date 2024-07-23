@@ -30,6 +30,12 @@ namespace AvatAdmobExtension.Script.Manager
         public IAdStrategy RewardedAd;
         public NativeAdHandler NativeAdHandler;
 
+
+        public bool CanNativeAdShow { get; set; }
+        public bool CanBannerAdShow { get; set; }
+        public bool CanInterstitialAdShow { get; set; }
+
+
         public static AdManager Instance =>
             _instance ?? (_instance = new GameObject("AdManager").AddComponent<AdManager>());
 

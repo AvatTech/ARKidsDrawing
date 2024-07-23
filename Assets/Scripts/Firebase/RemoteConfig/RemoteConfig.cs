@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using AvatAdmobExtension.Script.Manager;
 using Firebase.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,13 +14,15 @@ namespace Firebase.RemoteConfig
 
         public RemoteConfig()
         {
+            OnDataFetched.AddListener(DataFetched);
+            
             FetchDataAsync();
 
             FirebaseRemoteConfig.DefaultInstance.OnConfigUpdateListener
                 += ConfigUpdateListenerEventHandler;
         }
 
-        private Task FetchDataAsync()
+        public Task FetchDataAsync()
         {
             Debug.Log("Fetching data...");
             var fetchTask =
@@ -88,6 +91,13 @@ namespace Firebase.RemoteConfig
 
                     OnDataFetched.Invoke(native, banner, interstitial);
                 });
+        }
+
+        private void DataFetched(bool native, bool banner, bool interstitial)
+        {
+            AdManager.Instance.CanNativeAdShow = native;
+            AdManager.Instance.CanBannerAdShow = banner;
+            AdManager.Instance.CanInterstitialAdShow = interstitial;
         }
     }
 }
