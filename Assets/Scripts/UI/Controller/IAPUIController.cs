@@ -1,6 +1,9 @@
+using EasyUI.Toast;
 using Services;
 using UI.Toggle;
 using UnityEngine;
+using UnityEngine.Purchasing;
+using Utills;
 using Zenject;
 
 namespace UI.Controller
@@ -28,6 +31,21 @@ namespace UI.Controller
             _iapService.Initialize();
         }
 
+        private void OnEnable()
+        {
+            _iapService.OnInitializeCompleted.AddListener(OnInitializeCompleted);
+            _iapService.OnPurchaseCompleted.AddListener(OnPurchaseCompleted);
+            _iapService.OnRestoreCompleted.AddListener(OnRestoreCompleted);
+            _iapService.Initialize();
+        }
+
+        private void OnDisable()
+        {
+            _iapService.OnInitializeCompleted.RemoveListener(OnInitializeCompleted);
+            _iapService.OnPurchaseCompleted.RemoveListener(OnPurchaseCompleted);
+            _iapService.OnRestoreCompleted.RemoveListener(OnRestoreCompleted);
+        }
+
         private void Init()
         {
             InitComponents();
@@ -52,9 +70,6 @@ namespace UI.Controller
             privacyPolicyButton.onClick.AddListener(OnPrivacyClicked);
             termsConditionButton.onClick.AddListener(OnTermsClicked);
             restoreButton.onClick.AddListener(OnRestoreClicked);
-
-            _iapService.OnInitializeCompleted.AddListener(OnInitializeCompleted);
-            _iapService.OnPurchaseCompleted.AddListener(OnPurchaseCompleted);
         }
 
         public void CloseButton()
@@ -67,23 +82,31 @@ namespace UI.Controller
         {
             if (weeklyToggle.IsSelected)
             {
-                _iapService.Purchase(ProductType.SubscriptionWeekly);
+                _iapService.Purchase(Constants.WeeklySubscriptionID);
                 return;
             }
 
             if (monthlyToggle.IsSelected)
             {
-                _iapService.Purchase(ProductType.SubscriptionMonthly);
+                _iapService.Purchase(Constants.MonthlySubscriptionID);
                 return;
             }
         }
 
-        private void OnInitializeCompleted(string weeklyTitle, string weeklyPrice, string monthlyTitle,
-            string monthlyPrice)
+        private void OnInitializeCompleted(Product[] products)
         {
-            Debug.Log("on initialize completed");
+            Debug.Log(
+                $"IAPController: OnInitializeCompleted - {products[0].definition.id}, {products[1].definition.id}");
 
-            Debug.Log($"{weeklyTitle} {weeklyPrice} {monthlyTitle} {monthlyPrice}");
+            if (_iapService.IsPurchased())
+            {
+                paidPanelPage.SetActive(true);
+                purchasePanelPage.SetActive(false);
+                return;
+            }
+
+            paidPanelPage.SetActive(false);
+            purchasePanelPage.SetActive(true);
 
             if (purchaseButton != null)
             {
@@ -97,11 +120,7 @@ namespace UI.Controller
 
             if (iapToggleController != null)
             {
-                iapToggleController.UpdateText(
-                    weeklyTitle,
-                    weeklyPrice,
-                    monthlyTitle,
-                    monthlyPrice);
+                iapToggleController.UpdateText(products);
             }
         }
 
@@ -114,6 +133,19 @@ namespace UI.Controller
             if (restoreButton != null)
             {
                 restoreButton.enabled = false;
+            }
+        }
+
+        private void OnRestoreCompleted()
+        {
+            if (_iapService.IsPurchased())
+            {
+                paidPanelPage.SetActive(true);
+                purchasePanelPage.SetActive(false);
+            }
+            else
+            {
+                Toast.Show("You are not Subscribed!", 3f);
             }
         }
 
@@ -130,10 +162,7 @@ namespace UI.Controller
 
         private void OnRestoreClicked()
         {
-            var result = _iapService.Restore();
-
-            paidPanelPage.SetActive(result);
-            purchasePanelPage.SetActive(!result);
+            _iapService.Restore();
         }
     }
 }

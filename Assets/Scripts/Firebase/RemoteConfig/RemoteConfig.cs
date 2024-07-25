@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using AvatAdmobExtension.Script.Manager;
+// using AvatAdmobExtension.Script.Manager;
 using Firebase.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -95,9 +95,9 @@ namespace Firebase.RemoteConfig
 
         private void DataFetched(bool native, bool banner, bool interstitial)
         {
-            AdManager.Instance.CanNativeAdShow = native;
-            AdManager.Instance.CanBannerAdShow = banner;
-            AdManager.Instance.CanInterstitialAdShow = interstitial;
+            // AdManager.Instance.CanNativeAdShow = native;
+            // AdManager.Instance.CanBannerAdShow = banner;
+            // AdManager.Instance.CanInterstitialAdShow = interstitial;
         }
     }
 }

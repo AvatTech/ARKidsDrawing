@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Purchasing;
 using UnityEngine.UI;
 
 namespace UI.Controller
@@ -26,26 +27,36 @@ namespace UI.Controller
 
         private void InitComponents()
         {
-            weeklyTitleText.text = string.Empty;
-            weeklyPriceText.text = string.Empty;
-            monthlyTitleText.text = string.Empty;
-            monthlyPriceText.text = string.Empty;
-            monthlySubPriceText.text = string.Empty;
+            // weeklyTitleText.text = string.Empty;
+            // weeklyPriceText.text = string.Empty;
+            // monthlyTitleText.text = string.Empty;
+            // monthlyPriceText.text = string.Empty;
+            // monthlySubPriceText.text = string.Empty;
         }
 
         private void InitCommands()
         {
-            
         }
 
-        public void UpdateText(string weeklyTitle, string weeklyPrice, string monthlyTitle, string monthlyPrice)
+        public void UpdateText(Product[] products)
         {
-            weeklyTitleText.text = weeklyTitle;
-            weeklyPriceText.text = $"${weeklyPrice} / Weekly";
-            monthlyTitleText.text = monthlyTitle;
-            monthlyPriceText.text = $"${monthlyPrice} / Monthly";
-            var monthlySubPrice = int.Parse(monthlyPrice) / 4;
-            monthlySubPriceText.text = $"${monthlySubPrice} USD";
+            var weeklyProduct = products[0];
+            var monthlyProduct = products[1];
+
+            Debug.Log(weeklyProduct.metadata.localizedPriceString);
+            Debug.Log(monthlyProduct.metadata.localizedPriceString);
+
+
+            weeklyTitleText.text = weeklyProduct.metadata.localizedTitle;
+            weeklyPriceText.text =
+                $"Weekly / {weeklyProduct.metadata.localizedPriceString}";
+            
+            monthlyTitleText.text = monthlyProduct.metadata.localizedTitle;
+            monthlyPriceText.text =
+                $"Monthly / {monthlyProduct.metadata.localizedPriceString}";
+            var monthlySubPrice = monthlyProduct.metadata.localizedPrice / 4;
+            monthlySubPriceText.text =
+                string.Format("{0:#.00} {1}", monthlySubPrice, monthlyProduct.metadata.isoCurrencyCode);
         }
     }
 }

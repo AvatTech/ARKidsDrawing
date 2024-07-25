@@ -1,7 +1,6 @@
-using AvatAdmobExtension.Script.Manager;
+// using AvatAdmobExtension.Script.Manager;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Utills;
 using VideoRecorder.Services;

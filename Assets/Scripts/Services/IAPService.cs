@@ -1,191 +1,189 @@
 using System;
 using Repositories;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Extension;
 using Utills;
 using Zenject;
 
 namespace Services
 {
-    public class IAPService : IStoreListener
+    public class IAPService : IDetailedStoreListener
     {
-        [Inject] private readonly IAPRepository _iapRepository;
-
-        private const string AssetPath = "IAPProductCatalog";
+        [Inject] private IAPRepository _iapRepository;
 
         private IStoreController _storeController;
-        private IExtensionProvider _extensionProvider;
 
-        public UnityEvent<string, string, string, string> OnInitializeCompleted { get; } = new();
+        public UnityEvent<Product[]> OnInitializeCompleted { get; } = new();
         public UnityEvent OnPurchaseCompleted { get; } = new();
+        public UnityEvent OnRestoreCompleted { get; } = new();
+
+        public IAPService()
+        {
+            OnInitializeCompleted.AddListener(InitializeCompleted);
+            Initialize();
+        }
 
         public void Initialize()
         {
-            InitializePurchase();
-        }
-
-        public void Purchase(ProductType type)
-        {
-            if (type == ProductType.SubscriptionWeekly)
+            if (_storeController == null)
             {
-                _storeController.InitiatePurchase(_storeController.products.WithID(Constants.WeeklySubscriptionID));
-            }
-            else if (type == ProductType.SubscriptionMonthly)
-            {
-                _storeController.InitiatePurchase(_storeController.products.WithID(Constants.MonthlySubscriptionID));
-            }
-        }
-
-        private async void InitializePurchase()
-        {
-            var option = new InitializationOptions();
-            await UnityServices.InitializeAsync(option);
-            var operation = Resources.LoadAsync<TextAsset>(AssetPath);
-            operation.completed += HandleIAPCatalogLoaded;
-        }
-
-        private void HandleIAPCatalogLoaded(AsyncOperation operation)
-        {
-            var request = operation as ResourceRequest;
-
-            if (request == null) return;
-
-            if (request.asset as TextAsset == null) return;
-
-            Debug.Log($"Loaded Asset: {request.asset}");
-
-            var catalog = JsonUtility.FromJson<ProductCatalog>((request.asset as TextAsset).text);
-
-            Debug.Log($"Loaded catalog with {catalog.allProducts.Count} items");
-
-            StandardPurchasingModule.Instance().useFakeStoreUIMode = FakeStoreUIMode.StandardUser;
-            StandardPurchasingModule.Instance().useFakeStoreAlways = true;
-
-#if UNITY_ANDROID
-            var builder = ConfigurationBuilder.Instance(
-                StandardPurchasingModule.Instance(AppStore.GooglePlay)
-            );
-#elif UNITY_IOS
-        var builder = ConfigurationBuilder.Instance(
-            StandardPurchasingModule.Instance(AppStore.AppleAppStore)
-        );
-#else
-        var builder = ConfigurationBuilder.Instance(
-            StandardPurchasingModule.Instance(AppStore.NotSpecified)
-        );
-#endif
-            foreach (var product in catalog.allProducts)
-            {
-                builder.AddProduct(product.id, product.type);
+                InitializePurchasing();
+                return;
             }
 
-            UnityPurchasing.Initialize(this, builder);
+            OnInitializeCompleted.Invoke(new[]
+            {
+                _storeController.products.WithID(Constants.WeeklySubscriptionID),
+                _storeController.products.WithID(Constants.MonthlySubscriptionID)
+            });
         }
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
+            Debug.Log("IAPService: In-App Purchasing successfully initialized");
             _storeController = controller;
-            _extensionProvider = extensions;
-            var weeklyProduct = _storeController.products.WithID(Constants.WeeklySubscriptionID);
-            var monthlyProduct = _storeController.products.WithID(Constants.MonthlySubscriptionID);
-            Debug.Log(
-                $"{weeklyProduct.metadata.localizedTitle} {weeklyProduct.metadata.localizedPriceString} {monthlyProduct.metadata.localizedTitle} {monthlyProduct.metadata.localizedPriceString}");
-            OnInitializeCompleted.Invoke(
-                weeklyProduct.metadata.localizedTitle,
-                weeklyProduct.metadata.localizedPriceString,
-                monthlyProduct.metadata.localizedTitle,
-                monthlyProduct.metadata.localizedPriceString
-            );
+
+            OnInitializeCompleted.Invoke(new[]
+            {
+                controller.products.WithID(Constants.WeeklySubscriptionID),
+                controller.products.WithID(Constants.MonthlySubscriptionID)
+            });
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
-            Debug.Log("IAP Initialization Failed: " + error);
+            OnInitializeFailed(error, null);
         }
 
         public void OnInitializeFailed(InitializationFailureReason error, string message)
         {
-            Debug.Log("IAP Initialization Failed: " + message);
+            var errorMessage = $"IAPService: Purchasing failed to initialize. Reason: {error}.";
+
+            if (message != null)
+            {
+                errorMessage += $" More details: {message}";
+            }
+
+            Debug.Log(errorMessage);
         }
 
-        public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
+        public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
         {
-            Debug.Log($"Purchase Successful {purchaseEvent.purchasedProduct.definition.id}");
-            UnlockPremiumFeatures(purchaseEvent.purchasedProduct);
+            // Retrieve the purchased product
+            var product = args.purchasedProduct;
+
+            Debug.Log($"IAPService: Purchase Complete - Product: {product.definition.id}");
+
+            if (args.purchasedProduct.definition.id == Constants.WeeklySubscriptionID)
+            {
+                _iapRepository.SaveSubscriptionExpiryDate(DateTime.Now.AddDays(7));
+            }
+            else if (args.purchasedProduct.definition.id == Constants.MonthlySubscriptionID)
+            {
+                _iapRepository.SaveSubscriptionExpiryDate(DateTime.Now.AddDays(30));
+            }
+
+            OnPurchaseCompleted.Invoke();
+
+            // We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
             return PurchaseProcessingResult.Complete;
         }
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
-            Debug.Log($"Purchase Failed: product id:{product.definition.id} because {failureReason}");
+            Debug.Log(
+                $"IAPService: Purchase failed - Product: '{product.definition.id}', PurchaseFailureReason: {failureReason}");
         }
 
-        private void UnlockPremiumFeatures(Product product)
-        {
-            Debug.Log($"{product.metadata.localizedTitle} Purchased.");
-            // create a SubscriptionManager object using the subscription Product object
 
-            var result = CheckSubscriptionStatus(product);
-            
-            if (result.HasValue)
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
+        {
+            Debug.Log($"Purchase failed - Product: '{product.definition.id}'," +
+                      $" Purchase failure reason: {failureDescription.reason}," +
+                      $" Purchase failure details: {failureDescription.message}");
+        }
+
+
+        private void InitializePurchasing()
+        {
+            var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+
+            // Add our purchasable product and indicate its type.
+
+            Debug.Log(
+                $"IAPService: weekly id:{Constants.WeeklySubscriptionID}, monthly id:{Constants.MonthlySubscriptionID}");
+
+            builder.AddProduct(Constants.WeeklySubscriptionID, ProductType.Subscription);
+            builder.AddProduct(Constants.MonthlySubscriptionID, ProductType.Subscription);
+
+            UnityPurchasing.Initialize(this, builder);
+        }
+
+        private DateTime? IsSubscribedTo(Product subscription)
+        {
+            // If the product doesn't have a receipt, then it wasn't purchased and the user is therefore not subscribed.
+            if (subscription.receipt == null)
             {
-                _iapRepository.SaveSubscriptionExpiryDate(result.Value);
-                OnPurchaseCompleted.Invoke();
+                return null;
             }
 
-            // _iapRepository.SaveSubscriptionExpiryDate(DateTime.Now.AddMonths(1));
-            // OnPurchaseCompleted.Invoke();
-        }
+            //The intro_json parameter is optional and is only used for the App Store to get introductory information.
+            var subscriptionManager = new SubscriptionManager(subscription, null);
 
-        private DateTime? CheckSubscriptionStatus(Product product)
-        {
-            var subscriptionManager = new SubscriptionManager(product, null);
-            var subscriptionInfo = subscriptionManager.getSubscriptionInfo();
-            // check if the subscription is active
-            if (subscriptionInfo.isSubscribed() == Result.True)
+            // The SubscriptionInfo contains all of the information about the subscription.
+            // Find out more: https://docs.unity3d.com/Packages/com.unity.purchasing@3.1/manual/UnityIAPSubscriptionProducts.html
+            var info = subscriptionManager.getSubscriptionInfo();
+
+            if (info.isSubscribed() == Result.True)
             {
-                Debug.Log("Subscription expiration date: " + subscriptionInfo.getExpireDate());
-                return subscriptionInfo.getExpireDate();
+                return info.getExpireDate();
             }
 
             return null;
         }
 
-        public bool Restore()
+        public void Purchase(string id)
         {
-            var product = _storeController.products.WithID(Constants.WeeklySubscriptionID);
-            Debug.Log(product);
-            if (product != null && product.hasReceipt)
-            {
-                var result = CheckSubscriptionStatus(product);
-                if (result.HasValue)
-                {
-                    _iapRepository.SaveSubscriptionExpiryDate(result.Value);
-                    OnPurchaseCompleted.Invoke();
-                    return true;
-                }
+            _storeController.InitiatePurchase(id);
+        }
 
-                return false;
+        public void Restore()
+        {
+            var weeklyProduct = _storeController.products.WithID(Constants.WeeklySubscriptionID);
+            var result = IsSubscribedTo(weeklyProduct);
+            if (result.HasValue)
+            {
+                Debug.Log($"IAPService: Restore - Subscribe to: {weeklyProduct.definition.id}");
+                _iapRepository.SaveSubscriptionExpiryDate(result.Value);
+                OnRestoreCompleted.Invoke();
+                return;
             }
 
-            product = _storeController.products.WithID(Constants.MonthlySubscriptionID);
-            Debug.Log(product);
-            if (product != null && product.hasReceipt)
+            var monthlyProduct = _storeController.products.WithID(Constants.MonthlySubscriptionID);
+            result = IsSubscribedTo(monthlyProduct);
+            if (result.HasValue)
             {
-                var result = CheckSubscriptionStatus(product);
-                if (result.HasValue)
-                {
-                    _iapRepository.SaveSubscriptionExpiryDate(result.Value);
-                    OnPurchaseCompleted.Invoke();
-                    return true;
-                }
-
-                return false;
+                Debug.Log($"IAPService: Restore - Subscribe to: {monthlyProduct.definition.id}");
+                _iapRepository.SaveSubscriptionExpiryDate(result.Value);
+                OnRestoreCompleted.Invoke();
+                return;
             }
 
-            return false;
+            OnRestoreCompleted.Invoke();
+            Debug.Log($"IAPService: Restore - Not Subscribed");
+        }
+
+        public bool IsPurchased()
+        {
+            return _iapRepository.IsPurchased();
+        }
+
+        private void InitializeCompleted(Product[] products)
+        {
+            OnInitializeCompleted.RemoveListener(InitializeCompleted);
+            Restore();
         }
     }
 }

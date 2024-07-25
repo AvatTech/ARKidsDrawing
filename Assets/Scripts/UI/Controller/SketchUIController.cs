@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AvatAdmobExtension.Script.Manager;
+// using AvatAdmobExtension.Script.Manager;
 using Categories.Utills;
 using Extensions.Unity.ImageLoader;
 using Firebase.RemoteConfig;
-using NSubstitute.Extensions;
 using Repositories;
 using Sketches.Controller;
 using Sketches.Model;
@@ -65,12 +64,12 @@ namespace UI.Controller
             RemoveSketches();
         }
 
-        private IEnumerator StartShowingAd()
-        {
-            yield return new WaitUntil(() => AdManager.Instance.InterstitialAd.IsAdReady());
-
-            AdManager.Instance.InterstitialAd.ShowAd();
-        }
+        // private IEnumerator StartShowingAd()
+        // {
+            // yield return new WaitUntil(() => AdManager.Instance.InterstitialAd.IsAdReady());
+            //
+            // AdManager.Instance.InterstitialAd.ShowAd();
+        // }
 
         private async Task FetchSketches()
         {
@@ -126,16 +125,16 @@ namespace UI.Controller
 
         private void DataFetched(bool native, bool banner, bool interstitial)
         {
-            AdManager.Instance.CanNativeAdShow = native;
-            AdManager.Instance.CanBannerAdShow = banner;
-            AdManager.Instance.CanInterstitialAdShow = interstitial;
-            
-            
-            if (AdManager.Instance.CanInterstitialAdShow)
-            {
-                AdManager.Instance.InterstitialAd.LoadAd();
-                StartCoroutine(StartShowingAd());
-            }
+            // AdManager.Instance.CanNativeAdShow = native;
+            // AdManager.Instance.CanBannerAdShow = banner;
+            // AdManager.Instance.CanInterstitialAdShow = interstitial;
+            //
+            //
+            // if (AdManager.Instance.CanInterstitialAdShow)
+            // {
+            //     AdManager.Instance.InterstitialAd.LoadAd();
+            //     StartCoroutine(StartShowingAd());
+            // }
         }
     }
 }

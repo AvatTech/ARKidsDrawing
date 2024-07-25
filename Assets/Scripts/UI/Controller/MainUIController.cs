@@ -11,7 +11,6 @@ namespace UI.Controller
     public class MainUIController : MonoBehaviour
     {
         [Inject] private IAPRepository _iapRepository;
-        [Inject] private IAPService _iapService;
 
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
@@ -48,8 +47,6 @@ namespace UI.Controller
 
         private void InitCommands()
         {
-            _iapService.OnInitializeCompleted.AddListener(CheckForPremium);
-            _iapService.Initialize();
         }
 
         private void OnDestroy()

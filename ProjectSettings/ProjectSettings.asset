@@ -171,7 +171,7 @@ PlayerSettings:
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 10225
   AndroidMinSdkVersion: 26
-  AndroidTargetSdkVersion: 0
+  AndroidTargetSdkVersion: 34
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
@@ -983,10 +983,10 @@ PlayerSettings:
       PointOfService: False
       RecordedCallsFolder: False
       Contacts: False
+      Proximity: False
       InternetClient: True
       CodeGeneration: False
       BackgroundMediaPlayback: False
-      Proximity: False
   metroTargetDeviceFamilies:
     Desktop: False
     Holographic: False

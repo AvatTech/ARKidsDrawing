@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AvatAdmobExtension.Script.Manager;
+// using AvatAdmobExtension.Script.Manager;
 using Categories.Controller;
 using Categories.Model;
 using Categories.Services;
-using Network;
-using Story.Controller;
 using Story.Manager;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace UI.Controller
@@ -47,7 +43,7 @@ namespace UI.Controller
 
         private void OnEnable()
         {
-            StartCoroutine(AdManager.Instance.BannerAd.LoadThenShow());
+            // StartCoroutine(AdManager.Instance.BannerAd.LoadThenShow());
         }
 
         public async void OnTryAgainClicked()
