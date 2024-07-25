@@ -11,6 +11,7 @@ namespace UI.Controller
     public class MainUIController : MonoBehaviour
     {
         [Inject] private IAPRepository _iapRepository;
+        [Inject] private IAPService _iapService;
 
         [Header("Panels")] [SerializeField] private GameObject categoryPanel;
         [SerializeField] private GameObject mainPagePanel;
@@ -42,11 +43,12 @@ namespace UI.Controller
                 ShowSketchesPanel();
             }
 
-            CheckForPremium(string.Empty, string.Empty, string.Empty, string.Empty);
+            CheckForPremium();
         }
 
         private void InitCommands()
         {
+            _iapService.OnPurchaseCompleted.AddListener(PurchaseCompleted);
         }
 
         private void OnDestroy()
@@ -91,7 +93,7 @@ namespace UI.Controller
             }
         }
 
-        private void CheckForPremium(string arg0, string s, string s1, string arg3)
+        private void CheckForPremium()
         {
             var result = _iapRepository.IsPurchased();
             if (result)
@@ -102,6 +104,11 @@ namespace UI.Controller
             {
                 iapBanner.SetActive(true);
             }
+        }
+
+        private void PurchaseCompleted()
+        {
+            CheckForPremium();
         }
     }
 }
